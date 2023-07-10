@@ -27,7 +27,7 @@ const App = () => {
     if (newMostVoted !== mostVoted) setMostVoted(newMostVoted)
     setVotes(newVotes)
   }
-  const handleNext = () => setSelected(~~(Math.random() * 8))
+  const handleNext = () => setSelected(~~(Math.random() * votes.length))
 
   return (<>
     <h1>Anecdote of the day</h1>
