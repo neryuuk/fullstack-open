@@ -11,6 +11,8 @@ const Feedback = ({ text, count, percent }) => (
 const Statistics = ({ good, bad, neutral }) => {
   const total = good + neutral + bad
 
+  if (total === 0) return <p>No feedback given</p>
+
   return <>
     <h1>statistics</h1>
     <Feedback text='good' count={good} />
