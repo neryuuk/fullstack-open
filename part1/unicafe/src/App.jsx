@@ -1,11 +1,14 @@
-import { useState, Fragment } from 'react'
+import { useState } from 'react'
 
 const Button = ({ handleClick, text }) => (
   <button onClick={handleClick}>{text}</button>
 )
 
 const StatisticLine = ({ text, value }) => (
-  <p>{text} {value}</p>
+  <tr>
+    <td>{text}</td>
+    <td>{value}</td>
+  </tr>
 )
 
 const Statistics = ({ good, bad, neutral }) => {
@@ -13,14 +16,14 @@ const Statistics = ({ good, bad, neutral }) => {
 
   if (total === 0) return <p>No feedback given</p>
 
-  return <>
+  return <table><tbody>
     <StatisticLine text='good' value={good} />
     <StatisticLine text='neutral' value={neutral} />
     <StatisticLine text='bad' value={bad} />
     <StatisticLine text='all' value={total} />
-    <StatisticLine text='average' value={good - bad} />
+    <StatisticLine text='average' value={(good - bad) / (total)} />
     <StatisticLine text='positive' value={`${(good * 100) / (total)} %`} />
-  </>
+  </tbody></table>
 }
 
 const App = () => {
@@ -36,7 +39,7 @@ const App = () => {
       <Button text='bad' handleClick={() => setBad(bad + 1)} />
 
       <h1>statistics</h1>
-      <Statistics good={good} neutral={neutral} bad={bad}/>
+      <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
   )
 }
