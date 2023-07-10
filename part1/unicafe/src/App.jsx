@@ -4,8 +4,8 @@ const Button = ({ handleClick, text }) => (
   <button onClick={handleClick}>{text}</button>
 )
 
-const Feedback = ({ text, count, percent }) => (
-  <p>{text} {count} {percent && '%'}</p>
+const StatisticLine = ({ text, value }) => (
+  <p>{text} {value}</p>
 )
 
 const Statistics = ({ good, bad, neutral }) => {
@@ -14,13 +14,12 @@ const Statistics = ({ good, bad, neutral }) => {
   if (total === 0) return <p>No feedback given</p>
 
   return <>
-    <h1>statistics</h1>
-    <Feedback text='good' count={good} />
-    <Feedback text='neutral' count={neutral} />
-    <Feedback text='bad' count={bad} />
-    <Feedback text='all' count={total} />
-    <Feedback text='average' count={good - bad} />
-    <Feedback text='positive' count={(good * 100) / (total)} percent />
+    <StatisticLine text='good' value={good} />
+    <StatisticLine text='neutral' value={neutral} />
+    <StatisticLine text='bad' value={bad} />
+    <StatisticLine text='all' value={total} />
+    <StatisticLine text='average' value={good - bad} />
+    <StatisticLine text='positive' value={`${(good * 100) / (total)} %`} />
   </>
 }
 
@@ -36,6 +35,7 @@ const App = () => {
       <Button text='neutral' handleClick={() => setNeutral(neutral + 1)} />
       <Button text='bad' handleClick={() => setBad(bad + 1)} />
 
+      <h1>statistics</h1>
       <Statistics good={good} neutral={neutral} bad={bad}/>
     </div>
   )
