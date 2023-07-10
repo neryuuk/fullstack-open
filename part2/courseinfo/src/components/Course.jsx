@@ -2,10 +2,10 @@ import Content from './Content'
 import Header from './Header'
 import Sum from './Sum'
 
-const Course = ({ course }) => <>
-  <Header name={course.name} />
-  <Content parts={course.parts} />
-  <Sum parts={course.parts} />
+const Course = ({ name, parts }) => <>
+  <Header name={name} />
+  <Content parts={parts} />
+  <Sum parts={parts} />
 </>
 
 export default Course
