@@ -2,28 +2,27 @@ import { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import Phonebook from './components/Phonebook'
 import AddItem from './components/AddItem'
-import { read, create } from './services/phonebook'
+import { create, read, del } from './services/phonebook'
 
 const App = () => {
   const [filter, setFilter] = useState('')
   const [persons, setPersons] = useState([])
-  const [filtered, setFiltered] = useState(persons)
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
 
   useEffect(() => {
     read().then(data => {
       setPersons(data)
-      setFiltered(data)
     }).catch(console.error)
   }, [])
 
   const handleFilter = ({ target }) => {
     setFilter(target.value)
-    setFiltered(persons.filter(matchFilter(target.value)))
   }
 
-  const matchFilter = filter => ({ name }) => name.toLowerCase().includes(filter.toLowerCase())
+  const matchFilter = person => {
+    return person.name.toLowerCase().includes(filter.toLowerCase())
+  }
 
   const handleNewName = ({ target }) => {
     setNewName(target.value)
@@ -41,11 +40,19 @@ const App = () => {
     const person = { name: newName, number: newNumber }
 
     create(person).then(data => {
-      console.log(data)
       setPersons(persons.concat(data))
-      if (matchFilter(filter)(data)) setFiltered(filtered.concat(data))
       setNewName('')
       setNewNumber('')
+    })
+  }
+
+  const handleDelete = id => {
+    const toDelete = persons.find(person => person.id === id)
+    if (!toDelete) return
+    if (!window.confirm(`Delete ${toDelete.name}?`)) return
+
+    del(id).then(() => {
+      setPersons(persons.filter(person => person.id !== id))
     })
   }
 
@@ -59,7 +66,7 @@ const App = () => {
       handleNumber={handleNewNumber}
       handleAdd={handleAddNewName}
     />
-    <Phonebook items={filtered} />
+    <Phonebook items={persons.filter(matchFilter)} handleDelete={handleDelete} />
   </div>
 }
 
