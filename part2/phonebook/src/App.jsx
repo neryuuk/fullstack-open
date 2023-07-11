@@ -40,10 +40,13 @@ const App = () => {
     }
     const person = { name: newName, number: newNumber }
 
-    setPersons(persons.concat(person))
-    if (matchFilter(filter)(person)) setFiltered(filtered.concat(person))
-    setNewName('')
-    setNewNumber('')
+    axios.post('http://localhost:3001/persons', person).then(({ data }) => {
+      console.log(data)
+      setPersons(persons.concat(person))
+      if (matchFilter(filter)(person)) setFiltered(filtered.concat(person))
+      setNewName('')
+      setNewNumber('')
+    })
   }
 
   return <div>
