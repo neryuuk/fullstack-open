@@ -36,6 +36,7 @@ const App = () => {
     event.preventDefault()
     let person = persons.find(({ name }) => name === newName)
     if (person) {
+      if (!window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) return
       update({ ...person, number: newNumber }).then(data => {
         setPersons(persons.map(person => person.id === data.id ? data : person))
         setNewName('')
