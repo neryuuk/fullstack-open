@@ -7,6 +7,7 @@ import Notification from './components/Notification'
 
 const App = () => {
   const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
   const [filter, setFilter] = useState('')
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
@@ -58,9 +59,11 @@ const App = () => {
     })
   }
 
-  const toast = (message, timeout = 3000) => {
-    setMessage(message)
-    setTimeout(() => setMessage(null), timeout)
+  const toast = (message, error = false, timeout = 3000) => {
+    const call = error ? setError : setMessage
+
+    call(message)
+    setTimeout(() => call(null), timeout)
   }
 
   const handleDelete = id => {
@@ -71,12 +74,16 @@ const App = () => {
     del(id).then(() => {
       setPersons(persons.filter(person => person.id !== id))
       toast(`Deleted ${toDelete.name}'s number`)
+    }).catch(() => {
+      toast(`Information of ${toDelete.name} has already been removed from server`, true)
+      setPersons(persons.filter(person => person.id !== id))
     })
   }
 
   return <div>
     <h2>Phonebook</h2>
     <Notification message={message} />
+    <Notification message={error} error={true} />
     <Filter filter={filter} handleChange={handleFilter} />
     <AddItem
       name={newName}
