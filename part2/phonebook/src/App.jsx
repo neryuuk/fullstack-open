@@ -3,8 +3,10 @@ import Filter from './components/Filter'
 import Phonebook from './components/Phonebook'
 import AddItem from './components/AddItem'
 import { create, read, update, del } from './services/phonebook'
+import Notification from './components/Notification'
 
 const App = () => {
+  const [message, setMessage] = useState('')
   const [filter, setFilter] = useState('')
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
@@ -39,6 +41,7 @@ const App = () => {
       if (!window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) return
       update({ ...person, number: newNumber }).then(data => {
         setPersons(persons.map(person => person.id === data.id ? data : person))
+        toast(`Changed ${newName}'s number`)
         setNewName('')
         setNewNumber('')
       })
@@ -49,9 +52,15 @@ const App = () => {
     person = { name: newName, number: newNumber }
     create(person).then(data => {
       setPersons(persons.concat(data))
+      toast(`Added '${newName}' to the phonebook`)
       setNewName('')
       setNewNumber('')
     })
+  }
+
+  const toast = (message, timeout = 3000) => {
+    setMessage(message)
+    setTimeout(() => setMessage(null), timeout)
   }
 
   const handleDelete = id => {
@@ -61,11 +70,13 @@ const App = () => {
 
     del(id).then(() => {
       setPersons(persons.filter(person => person.id !== id))
+      toast(`Deleted ${toDelete.name}'s number`)
     })
   }
 
   return <div>
     <h2>Phonebook</h2>
+    <Notification message={message} />
     <Filter filter={filter} handleChange={handleFilter} />
     <AddItem
       name={newName}
