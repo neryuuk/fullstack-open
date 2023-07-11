@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import Phonebook from './components/Phonebook'
 import AddItem from './components/AddItem'
-import { create, read, del } from './services/phonebook'
+import { create, read, update, del } from './services/phonebook'
 
 const App = () => {
   const [filter, setFilter] = useState('')
@@ -34,11 +34,18 @@ const App = () => {
 
   const handleAddNewName = event => {
     event.preventDefault()
-    if (persons.some(({ name }) => name === newName)) {
-      return window.alert(`${newName} is already added to phonebook`)
-    }
-    const person = { name: newName, number: newNumber }
+    let person = persons.find(({ name }) => name === newName)
+    if (person) {
+      update({ ...person, number: newNumber }).then(data => {
+        setPersons(persons.map(person => person.id === data.id ? data : person))
+        setNewName('')
+        setNewNumber('')
+      })
 
+      return
+    }
+
+    person = { name: newName, number: newNumber }
     create(person).then(data => {
       setPersons(persons.concat(data))
       setNewName('')
