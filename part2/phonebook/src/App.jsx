@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import Phonebook from './components/Phonebook'
 import AddItem from './components/AddItem'
-import axios from 'axios'
+import { read, create } from './services/phonebook'
 
 const App = () => {
   const [filter, setFilter] = useState('')
@@ -12,9 +12,9 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons').then(response => {
-      setPersons(response.data)
-      setFiltered(response.data)
+    read().then(data => {
+      setPersons(data)
+      setFiltered(data)
     }).catch(console.error)
   }, [])
 
@@ -40,10 +40,10 @@ const App = () => {
     }
     const person = { name: newName, number: newNumber }
 
-    axios.post('http://localhost:3001/persons', person).then(({ data }) => {
+    create(person).then(data => {
       console.log(data)
-      setPersons(persons.concat(person))
-      if (matchFilter(filter)(person)) setFiltered(filtered.concat(person))
+      setPersons(persons.concat(data))
+      if (matchFilter(filter)(data)) setFiltered(filtered.concat(data))
       setNewName('')
       setNewNumber('')
     })
