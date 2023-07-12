@@ -32,7 +32,6 @@ const App = () => {
   }
 
   const filtered = countries.filter(matchFilter)
-  console.log(process.env.REACT_APP_OPEN_WEATHER_KEY)
 
   return <div>
     <Filter filter={filter} handleChange={handleFilter} />
