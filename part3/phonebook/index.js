@@ -4,7 +4,17 @@ const app = express()
 const PORT = 3001
 
 app.use(express.json())
-app.use(morgan('tiny'))
+app.use(morgan(function (tokens, request, response) {
+  const method = tokens['method'](request, response)
+  return [
+    method,
+    tokens['url'](request, response),
+    tokens['status'](request, response),
+    tokens['res'](request, response, 'content-length'), '-',
+    tokens['response-time'](request, response), 'ms',
+    method === 'POST' ? JSON.stringify(request.body) : null
+  ].join(' ')
+}))
 
 let persons = [{
   "id": 1,
