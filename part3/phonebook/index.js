@@ -22,6 +22,13 @@ let persons = [{
   "number": "39-23-6423122"
 }]
 
+const newId = () => {
+  const id = (Math.floor(1 + (Math.random() * 1024 * 4)))
+  return (persons.some(person => person.id === id))
+    ? newId()
+    : id
+}
+
 app.route('/info').get((_, response) => {
   let data = [
     '<!DOCTYPE html><html lang="en">',
@@ -36,7 +43,21 @@ app.route('/info').get((_, response) => {
   response.send(data)
 })
 
-app.route('/api/persons').get((_, response) => {
+app.route('/api/persons').post((request, response) => {
+  const { body } = request
+
+  if (!body.name) return response.status(400).json({ error: 'Name is empty' })
+  if (!body.number) return response.status(400).json({ error: 'Number is empty' })
+
+  const person = {
+    id: newId(),
+    name: body.name,
+    number: body.number
+  }
+  persons = persons.concat(person)
+
+  response.json(person)
+}).get((_, response) => {
   response.json(persons)
 })
 
