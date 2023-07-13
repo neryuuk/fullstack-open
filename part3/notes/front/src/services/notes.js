@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseUrl = 'http://localhost:3001/api/notes'
+const baseUrl = '/api/notes'
 
 export const getOne = id => {
   return axios.get(`${baseUrl}/${id}`).then(({ data }) => data)
