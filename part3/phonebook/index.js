@@ -1,8 +1,10 @@
+const cors = require('cors')
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
 const PORT = 3001
 
+app.use(cors())
 app.use(express.json())
 app.use(morgan(function (tokens, request, response) {
   const method = tokens['method'](request, response)
@@ -55,7 +57,7 @@ app.route('/info').get((_, response) => {
   response.send(data)
 })
 
-app.route('/api/persons').post((request, response) => {
+app.route('/persons').post((request, response) => {
   const { body } = request
 
   if (!body.name) return response.status(400).json({ error: 'Name field is empty' })
@@ -74,7 +76,7 @@ app.route('/api/persons').post((request, response) => {
   response.json(persons)
 })
 
-app.route('/api/persons/:id').get((request, response) => {
+app.route('/persons/:id').get((request, response) => {
   const { id } = request.params
   const person = persons.find(person => person.id === Number(id))
 
