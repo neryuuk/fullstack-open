@@ -22,6 +22,20 @@ let persons = [{
   "number": "39-23-6423122"
 }]
 
+app.route('/info').get((_, response) => {
+  let data = [
+    '<!DOCTYPE html><html lang="en">',
+    '<head><meta charset="utf-8" /></head>',
+    '<body>',
+    `<p>Phonebook has info for ${persons.length} people</p>`,
+    `<p>${new Date()}</p>`,
+    '</body>',
+    '</html>'
+  ].join('')
+
+  response.send(data)
+})
+
 app.route('/api/persons').get((_, response) => {
   response.json(persons)
 })
