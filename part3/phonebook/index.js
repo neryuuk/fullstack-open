@@ -46,8 +46,9 @@ app.route('/info').get((_, response) => {
 app.route('/api/persons').post((request, response) => {
   const { body } = request
 
-  if (!body.name) return response.status(400).json({ error: 'Name is empty' })
-  if (!body.number) return response.status(400).json({ error: 'Number is empty' })
+  if (!body.name) return response.status(400).json({ error: 'Name field is empty' })
+  if (!body.number) return response.status(400).json({ error: 'Number field is empty' })
+  if (persons.some(person => person.name === body.name)) return response.status(400).json({ error: 'Name must be unique' })
 
   const person = {
     id: newId(),
