@@ -1,7 +1,27 @@
 const express = require('express')
 const app = express()
+const PORT = 3001
+
+const generateId = () => {
+  return (notes.length > 0)
+    ? Math.max(...notes.map(n => n.id)) + 1
+    : 1
+}
+
+const logger = (request, _, next) => {
+  console.log('Method:', request.method)
+  console.log('Path:  ', request.path)
+  console.log('Body:  ', request.body)
+  console.log('---')
+  next()
+}
+
+const unknown = (_, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
 
 app.use(express.json())
+app.use(logger)
 
 let notes = [
   {
@@ -21,15 +41,9 @@ let notes = [
   }
 ]
 
-app.get('/', (request, response) => {
+app.get('/', (_, response) => {
   response.send('<h1>Hello World!</h1>')
 })
-
-const generateId = () => {
-  return (notes.length > 0)
-    ? Math.max(...notes.map(n => n.id)) + 1
-    : 1
-}
 
 app.route('/api/notes').post((request, response) => {
   const { body } = request
@@ -44,22 +58,23 @@ app.route('/api/notes').post((request, response) => {
   notes = notes.concat(note)
 
   response.json(note)
-}).get((request, response) => {
+}).get((_, response) => {
   response.json(notes)
 })
 
-app.route('/api/notes/:id').get((request, response) => {
+app.route('/api/notes/:id').get((request, response, next) => {
   const { id } = request.params
   const note = notes.find(note => note.id === +id)
   if (note) response.json(note)
-  else response.status(404).end()
+  else next()
 }).delete((request, response) => {
   const { id } = request.params
   notes = notes.filter(note => note.id !== +id)
   response.status(204).end()
 })
 
-const PORT = 3001
+app.use(unknown)
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
