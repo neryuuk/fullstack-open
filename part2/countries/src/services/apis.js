@@ -22,7 +22,7 @@ export const openWeatherApi = (lat, lng) => {
   return axios.get(url(lat, lng)).then(({ data }) => {
     const { icon, description } = data?.weather[0]
     return {
-      temp: data?.temp,
+      temp: data?.main?.temp,
       wind: data?.wind?.speed,
       desc: (icon && description) ? description : null,
       icon: (icon) ? `https://openweathermap.org/img/wn/${icon}@2x.png` : null
