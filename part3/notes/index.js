@@ -1,6 +1,8 @@
 const express = require('express')
+const cors = require('cors')
+const morgan = require('morgan')
 const app = express()
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 
 const generateId = () => {
   return (notes.length > 0)
@@ -8,20 +10,13 @@ const generateId = () => {
     : 1
 }
 
-const logger = (request, _, next) => {
-  console.log('Method:', request.method)
-  console.log('Path:  ', request.path)
-  console.log('Body:  ', request.body)
-  console.log('---')
-  next()
-}
-
 const unknown = (_, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
+app.use(cors())
 app.use(express.json())
-app.use(logger)
+app.use(morgan('dev'))
 
 let notes = [
   {

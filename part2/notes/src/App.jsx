@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import Note from './components/Note'
-import notesService from './services/notes'
+import {getAll, create, update} from './services/notes'
 import Notification from './components/Notification'
 import Footer from './components/Footer'
 
@@ -8,10 +8,10 @@ const App = () => {
   const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
-  const [errorMessage, setErrorMessage] = useState('some error happened...')
+  const [errorMessage, setErrorMessage] = useState('')
 
   const hook = () => {
-    notesService.getAll().then(data => {
+    getAll().then(data => {
       setNotes(data)
     }).catch(console.error)
   }
@@ -25,7 +25,7 @@ const App = () => {
       important: Math.random() > 0.5
     }
 
-    notesService.create(noteObject).then(data => {
+    create(noteObject).then(data => {
       console.log(data)
       setNotes(notes.concat(data))
       setNewNote('')
@@ -39,7 +39,7 @@ const App = () => {
   const toggleImportanceOf = id => {
     const note = notes.find(note => note.id === id)
     const changeNote = { ...note, important: !note.important }
-    notesService.update(id, changeNote).then(data => {
+    update(id, changeNote).then(data => {
       setNotes(notes.map(note => note.id !== id ? note : data))
     }).catch(error => {
       setErrorMessage(
