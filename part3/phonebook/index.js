@@ -57,7 +57,7 @@ app.route('/info').get((_, response) => {
   response.send(data)
 })
 
-app.route('/persons').post((request, response) => {
+app.route('/api/persons').post((request, response) => {
   const { body } = request
 
   if (!body.name) return response.status(400).json({ error: 'Name field is empty' })
@@ -76,7 +76,7 @@ app.route('/persons').post((request, response) => {
   response.json(persons)
 })
 
-app.route('/persons/:id').get((request, response) => {
+app.route('/api/persons/:id').get((request, response) => {
   const { id } = request.params
   const person = persons.find(person => person.id === Number(id))
 
@@ -88,6 +88,8 @@ app.route('/persons/:id').get((request, response) => {
 
   response.status(204).end()
 })
+
+app.use(express.static('build'))
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
