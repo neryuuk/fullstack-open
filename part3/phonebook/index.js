@@ -46,6 +46,11 @@ app.route('/api/persons/:id').get((request, response) => {
 
   if (person) response.json(person)
   else response.status(404).end()
+}).delete((request, response) => {
+  const { id } = request.params
+  persons = persons.filter(person => person.id !== Number(id))
+
+  response.status(204).end()
 })
 
 app.listen(PORT, () => {
