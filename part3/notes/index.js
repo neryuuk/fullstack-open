@@ -1,4 +1,6 @@
 require('dotenv').config()
+require('./myip')
+
 const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
@@ -6,12 +8,6 @@ const mongoose = require('mongoose')
 const Note = require('./models/notes')
 const app = express()
 const PORT = process.env.PORT || 3001
-
-const generateId = () => {
-  return (notes.length > 0)
-    ? Math.max(...notes.map(n => n.id)) + 1
-    : 1
-}
 
 const unknown = (_, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
