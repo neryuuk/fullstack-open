@@ -11,9 +11,17 @@ mongoose.connect(MONGODB_URI).then((_) => {
 const schema = new mongoose.Schema({
   name: {
     type: String,
-    minLength: 3
+    minLength: 3,
+    required: [true, 'Name field is empty']
   },
-  number: String
+  number: {
+    type: String,
+    validate: {
+      validator: data => ((data.length >= 8) && /^\d{2,3}-\d{4,}$/.test(data)),
+      message: () => `Invalid phone number! Number must follow format 00-00000 or 000-0000 (8+ characters)`
+    },
+    required: [true, 'Number field is empty']
+  }
 }).set('toJSON', {
   transform: (_, result) => {
     result.id = result._id.toString()
