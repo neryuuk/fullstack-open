@@ -10,15 +10,25 @@ app.use(cors())
 app.use(express.json())
 app.use(morgan(function (tokens, request, response) {
   const method = tokens['method'](request, response)
-  return [
-    method,
-    tokens['url'](request, response),
-    tokens['status'](request, response),
-    tokens['res'](request, response, 'content-length'), '-',
-    tokens['response-time'](request, response), 'ms',
-    method === 'POST' ? JSON.stringify(request.body) : null
-  ].join(' ')
+  const status = ((typeof response.headersSent) !== 'boolean' ? Boolean(response.header) : response.headersSent)
+    ? response.statusCode
+    : undefined
+  let color = 0
+  if (status >= 500) color = 31
+  else if (status >= 400) color = 33
+  else if (status >= 300) color = 36
+  else if (status >= 200) color = 32
+
+  const log = [method, tokens['url'](request, response)]
+  if (status) log.push(`\x1b[${color}m${status}\x1b[0m`)
+  if (tokens['res'](request, response, 'content-length')) log.push(tokens['res'](request, response, 'content-length'))
+  log.push('-')
+  if (tokens['response-time'](request, response)) log.push(`${tokens['response-time'](request, response)} ms`)
+  if (['POST', 'PUT'].includes(`${method}`)) log.push(JSON.stringify(request.body))
+
+  return log.join(' ')
 }))
+app.use(express.static('build'))
 
 let persons = [{
   "id": 1,
@@ -37,13 +47,6 @@ let persons = [{
   "name": "Mary Poppendieck",
   "number": "39-23-6423122"
 }]
-
-const newId = () => {
-  const id = (Math.floor(1 + (Math.random() * 1024 * 4)))
-  return (persons.some(person => person.id === id))
-    ? newId()
-    : id
-}
 
 app.route('/info').get((_, response) => {
   let data = [
@@ -77,11 +80,19 @@ app.route('/api/persons').post(({ body }, response, next) => {
     .catch(error => next(error))
 })
 
-app.route('/api/persons/:id').get(({params}, response, next) => {
+app.route('/api/persons/:id').get(({ params }, response, next) => {
   Person.findById(params.id).then(person => {
     if (person) response.json(person)
     else response.status(404).end()
   }).catch(error => next(error))
+}).put(({ params, body }, response, next) => {
+  const person = {
+    name: body.name,
+    number: body.number
+  }
+  Person.findByIdAndUpdate(params.id, person, { new: true })
+    .then(result => response.json(result))
+    .catch(error => next(error))
 }).delete(({ params }, response, next) => {
   Person.findByIdAndRemove(params.id).then(() => {
     response.status(204).end()
@@ -101,8 +112,6 @@ app.use((error, _, response, next) => {
 app.use((_, response) => {
   response.status(404).send({ error: 'Unknown endpoint' })
 })
-
-app.use(express.static('build'))
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
