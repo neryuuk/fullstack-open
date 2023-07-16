@@ -1,6 +1,8 @@
+require('dotenv').config()
 const cors = require('cors')
 const express = require('express')
 const morgan = require('morgan')
+const Person = require('./models/people')
 const app = express()
 const PORT = process.env.PORT || 3001
 
@@ -73,15 +75,15 @@ app.route('/api/persons').post((request, response) => {
 
   response.json(person)
 }).get((_, response) => {
-  response.json(persons)
+  Person.find({}).then(people => response.json(people))
 })
 
 app.route('/api/persons/:id').get((request, response) => {
   const { id } = request.params
-  const person = persons.find(person => person.id === Number(id))
-
-  if (person) response.json(person)
-  else response.status(404).end()
+  Person.findById(id).then(person => {
+    if (person) response.json(person)
+    else response.status(404).end()
+  })
 }).delete((request, response) => {
   const { id } = request.params
   persons = persons.filter(person => person.id !== Number(id))
