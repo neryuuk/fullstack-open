@@ -48,8 +48,11 @@ app.route('/api/notes/:id').get((request, response, next) => {
   })
 }).delete((request, response) => {
   const { id } = request.params
-  notes = notes.filter(note => note.id !== +id)
-  response.status(204).end()
+  Note.findByIdAndDelete(id).then(() => {
+    response.status(204).end()
+  }).catch(error => {
+    response.status(400).json({ error: error.message })
+  })
 })
 
 app.use(unknown)
