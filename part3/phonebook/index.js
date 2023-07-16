@@ -29,7 +29,7 @@ app.use(morgan(function (tokens, request, response) {
 }))
 app.use(express.static('build'))
 
-app.route('/info').get((_, response) => {
+app.route('/info').get((_, response, next) => {
   Person.countDocuments({}).then(count => {
     response.send([
       '<!DOCTYPE html><html lang="en">',

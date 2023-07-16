@@ -34,7 +34,7 @@ if (argsCount === 3) {
 }
 
 const entry = new Person({ name, number })
-entry.save().then(_ => {
+entry.save().then(() => {
   console.log(`added ${name} number ${number} to phonebook`)
   mongoose.connection.close()
 })
