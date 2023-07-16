@@ -59,9 +59,7 @@ app.route('/info').get((_, response) => {
   response.send(data)
 })
 
-app.route('/api/persons').post((request, response) => {
-  const { body } = request
-
+app.route('/api/persons').post(({ body }, response, next) => {
   if (!body.name) return response.status(400).json({ error: 'Name field is empty' })
   if (!body.number) return response.status(400).json({ error: 'Number field is empty' })
 
@@ -70,21 +68,38 @@ app.route('/api/persons').post((request, response) => {
     number: body.number
   })
 
-  person.save().then(result => response.json(result))
-}).get((_, response) => {
-  Person.find({}).then(people => response.json(people))
+  person.save()
+    .then(result => response.json(result))
+    .catch(error => next(error))
+}).get((_, response, next) => {
+  Person.find({})
+    .then(people => response.json(people))
+    .catch(error => next(error))
 })
 
-app.route('/api/persons/:id').get((request, response) => {
-  const { id } = request.params
-  Person.findById(id).then(person => {
+app.route('/api/persons/:id').get(({params}, response, next) => {
+  Person.findById(params.id).then(person => {
     if (person) response.json(person)
     else response.status(404).end()
-  })
-}).delete(({ params }, response) => {
+  }).catch(error => next(error))
+}).delete(({ params }, response, next) => {
   Person.findByIdAndRemove(params.id).then(() => {
     response.status(204).end()
-  })
+  }).catch(error => next(error))
+})
+
+app.use((error, _, response, next) => {
+  console.error(error.name, error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'Malformed Id' })
+  }
+
+  next(error)
+})
+
+app.use((_, response) => {
+  response.status(404).send({ error: 'Unknown endpoint' })
 })
 
 app.use(express.static('build'))
