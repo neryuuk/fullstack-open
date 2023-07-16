@@ -19,7 +19,7 @@ app.get('/', (_, response) => {
   response.send('<h1>Hello World!</h1>')
 })
 
-app.route('/api/notes').post(({ body }, response) => {
+app.route('/api/notes').post(({ body }, response, next) => {
   if (!body.content) return response.status(400).json({ error: 'content is missing' })
 
   new Note({
@@ -28,7 +28,7 @@ app.route('/api/notes').post(({ body }, response) => {
   }).save()
     .then(result => response.json(result))
     .catch(error => next(error))
-}).get((_, response) => {
+}).get((_, response, next) => {
   Note.find({})
     .then(notes => response.json(notes))
     .catch(error => next(error))
@@ -44,8 +44,13 @@ app.route('/api/notes/:id').get(({ params }, response, next) => {
     content: body.content,
     important: body.important
   }
+  const options = {
+    new: true,
+    runValidators: true,
+    context: 'query'
+  }
 
-  Note.findByIdAndUpdate(params.id, note, { new: true })
+  Note.findByIdAndUpdate(params.id, note, options)
     .then(updated => response.json(updated))
     .catch(error => next(error))
 }).delete(({ params }, response, next) => {
@@ -59,6 +64,8 @@ app.use((error, _, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'Malformed Id' })
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).send({ error: error.message })
   }
 
   next(error)
