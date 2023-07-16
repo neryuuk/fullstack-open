@@ -64,16 +64,13 @@ app.route('/api/persons').post((request, response) => {
 
   if (!body.name) return response.status(400).json({ error: 'Name field is empty' })
   if (!body.number) return response.status(400).json({ error: 'Number field is empty' })
-  if (persons.some(person => person.name === body.name)) return response.status(400).json({ error: 'Name must be unique' })
 
-  const person = {
-    id: newId(),
+  const person = new Person({
     name: body.name,
     number: body.number
-  }
-  persons = persons.concat(person)
+  })
 
-  response.json(person)
+  person.save().then(result => response.json(result))
 }).get((_, response) => {
   Person.find({}).then(people => response.json(people))
 })
