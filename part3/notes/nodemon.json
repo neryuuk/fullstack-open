@@ -1,0 +1,4 @@
+{
+  "ignore": ["front", ".git", "node_modules"],
+  "ext": "js"
+}
