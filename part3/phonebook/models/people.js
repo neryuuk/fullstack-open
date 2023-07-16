@@ -9,7 +9,10 @@ mongoose.connect(MONGODB_URI).then((_) => {
 })
 
 const schema = new mongoose.Schema({
-  name: String,
+  name: {
+    type: String,
+    minLength: 3
+  },
   number: String
 }).set('toJSON', {
   transform: (_, result) => {

@@ -45,6 +45,8 @@ const App = () => {
         toast(`Changed ${newName}'s number`)
         setNewName('')
         setNewNumber('')
+      }).catch(error => {
+        toast(error.response.data.error, true)
       })
 
       return
@@ -56,6 +58,8 @@ const App = () => {
       toast(`Added '${newName}' to the phonebook`)
       setNewName('')
       setNewNumber('')
+    }).catch(error => {
+      toast(error.response.data.error, true)
     })
   }
 

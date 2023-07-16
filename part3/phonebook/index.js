@@ -71,7 +71,13 @@ app.route('/api/persons/:id').get(({ params }, response, next) => {
     name: body.name,
     number: body.number
   }
-  Person.findByIdAndUpdate(params.id, person, { new: true })
+  const options = {
+    new: true,
+    runValidators: true,
+    context: 'query'
+  }
+
+  Person.findByIdAndUpdate(params.id, person, options)
     .then(result => response.json(result))
     .catch(error => next(error))
 }).delete(({ params }, response, next) => {
@@ -85,6 +91,8 @@ app.use((error, _, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'Malformed Id' })
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).send({ error: error.message })
   }
 
   next(error)
