@@ -11,9 +11,9 @@ const PORT = process.env.PORT || 3001
 const MONGODB_URI = process.env.MONGODB_URI.replace('[[DB]]', 'noteApp')
 
 app.use(cors())
-app.use(express.static('build'))
 app.use(express.json())
 app.use(morgan('dev'))
+app.use(express.static('build'))
 
 app.get('/', (_, response) => {
   response.send('<h1>Hello World!</h1>')
@@ -22,14 +22,16 @@ app.get('/', (_, response) => {
 app.route('/api/notes').post(({ body }, response) => {
   if (!body.content) return response.status(400).json({ error: 'content is missing' })
 
-  const note = new Note({
+  new Note({
     content: body.content,
     important: body.important || false,
-  })
-
-  note.save().then(result => response.json(result))
+  }).save()
+    .then(result => response.json(result))
+    .catch(error => next(error))
 }).get((_, response) => {
-  Note.find({}).then(notes => response.json(notes))
+  Note.find({})
+    .then(notes => response.json(notes))
+    .catch(error => next(error))
 })
 
 app.route('/api/notes/:id').get(({ params }, response, next) => {
@@ -43,9 +45,9 @@ app.route('/api/notes/:id').get(({ params }, response, next) => {
     important: body.important
   }
 
-  Note.findByIdAndUpdate(params.id, note, { new: true }).then(updated => {
-    response.json(updated)
-  }).catch(error => next(error))
+  Note.findByIdAndUpdate(params.id, note, { new: true })
+    .then(updated => response.json(updated))
+    .catch(error => next(error))
 }).delete(({ params }, response, next) => {
   Note.findByIdAndRemove(params.id)
     .then(() => response.status(204).end())
@@ -70,7 +72,7 @@ mongoose.set('strictQuery', false)
 mongoose.connect(MONGODB_URI).then((_) => {
   console.log('Connected to MongoDB')
   app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
+    console.log('Server running on port', PORT)
   })
 }).catch(error => {
   console.error('Error connecting to MongoDB:', error.message)

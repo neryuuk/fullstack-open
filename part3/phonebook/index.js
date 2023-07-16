@@ -21,9 +21,8 @@ app.use(morgan(function (tokens, request, response) {
 
   const log = [method, tokens['url'](request, response)]
   if (status) log.push(`\x1b[${color}m${status}\x1b[0m`)
-  if (tokens['res'](request, response, 'content-length')) log.push(tokens['res'](request, response, 'content-length'))
-  log.push('-')
   if (tokens['response-time'](request, response)) log.push(`${tokens['response-time'](request, response)}ms`)
+  if (tokens['res'](request, response, 'content-length')) log.push('-', tokens['res'](request, response, 'content-length'))
   if (['POST', 'PUT'].includes(`${method}`)) log.push(JSON.stringify(request.body))
 
   return log.join(' ')
