@@ -76,7 +76,7 @@ app.use((_, response) => {
 })
 
 mongoose.set('strictQuery', false)
-mongoose.connect(MONGODB_URI).then((_) => {
+mongoose.connect(MONGODB_URI).then(() => {
   console.log('Connected to MongoDB')
   app.listen(PORT, () => {
     console.log('Server running on port', PORT)

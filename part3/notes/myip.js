@@ -1,9 +1,9 @@
-const https = require('https');
-const { networkInterfaces } = require('os');
+const https = require('https')
+const { networkInterfaces } = require('os')
 
 const get = (url) => https.get(url, response => {
-  const raw = [];
-  response.on('data', chunk => raw.push(chunk));
+  const raw = []
+  response.on('data', chunk => raw.push(chunk))
   response.on('end', () => {
     const data = Buffer.concat(raw).toString().trim()
     data.split('\n').forEach(row => {
@@ -19,7 +19,7 @@ const get = (url) => https.get(url, response => {
 })
 
 const interfaces = () => {
-  const nets = networkInterfaces();
+  const nets = networkInterfaces()
   Object.entries(nets).forEach(([name, value]) => {
     value.forEach(net => {
       (!net.internal) && console.log(name, net.family, net.cidr)
