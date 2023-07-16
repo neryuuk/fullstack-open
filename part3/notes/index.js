@@ -8,6 +8,7 @@ const mongoose = require('mongoose')
 const Note = require('./models/notes')
 const app = express()
 const PORT = process.env.PORT || 3001
+const MONGODB_URI = process.env.MONGODB_URI.replace('[[DB]]', 'noteApp')
 
 app.use(cors())
 app.use(express.static('build'))
@@ -66,7 +67,7 @@ app.use((_, response) => {
 })
 
 mongoose.set('strictQuery', false)
-mongoose.connect(process.env.MONGODB_URI).then((_) => {
+mongoose.connect(MONGODB_URI).then((_) => {
   console.log('Connected to MongoDB')
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
