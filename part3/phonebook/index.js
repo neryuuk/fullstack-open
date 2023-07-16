@@ -23,43 +23,25 @@ app.use(morgan(function (tokens, request, response) {
   if (status) log.push(`\x1b[${color}m${status}\x1b[0m`)
   if (tokens['res'](request, response, 'content-length')) log.push(tokens['res'](request, response, 'content-length'))
   log.push('-')
-  if (tokens['response-time'](request, response)) log.push(`${tokens['response-time'](request, response)} ms`)
+  if (tokens['response-time'](request, response)) log.push(`${tokens['response-time'](request, response)}ms`)
   if (['POST', 'PUT'].includes(`${method}`)) log.push(JSON.stringify(request.body))
 
   return log.join(' ')
 }))
 app.use(express.static('build'))
 
-let persons = [{
-  "id": 1,
-  "name": "Arto Hellas",
-  "number": "040-123456"
-}, {
-  "id": 2,
-  "name": "Ada Lovelace",
-  "number": "39-44-5323523"
-}, {
-  "id": 3,
-  "name": "Dan Abramov",
-  "number": "12-43-234345"
-}, {
-  "id": 4,
-  "name": "Mary Poppendieck",
-  "number": "39-23-6423122"
-}]
-
 app.route('/info').get((_, response) => {
-  let data = [
-    '<!DOCTYPE html><html lang="en">',
-    '<head><meta charset="utf-8" /></head>',
-    '<body>',
-    `<p>Phonebook has info for ${persons.length} people</p>`,
-    `<p>${new Date()}</p>`,
-    '</body>',
-    '</html>'
-  ].join('')
-
-  response.send(data)
+  Person.countDocuments({}).then(count => {
+    response.send([
+      '<!DOCTYPE html><html lang="en">',
+      '<head><meta charset="utf-8" /></head>',
+      '<body>',
+      `<p>Phonebook has info for ${count} people</p>`,
+      `<p>${new Date()}</p>`,
+      '</body>',
+      '</html>'
+    ].join(''))
+  }).catch(error => next(error))
 })
 
 app.route('/api/persons').post(({ body }, response, next) => {
