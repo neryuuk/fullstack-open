@@ -31,7 +31,7 @@ router.route('/:id').get(({ params }, response, next) => {
   const options = {
     new: true,
     runValidators: true,
-    context: 'query'
+    context: 'query',
   }
 
   Blog.findByIdAndUpdate(params.id, blog, options)
