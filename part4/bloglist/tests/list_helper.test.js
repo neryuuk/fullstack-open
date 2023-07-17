@@ -1,4 +1,4 @@
-const { dummy, totalLikes, favoriteBlog, mostBlogs } = require('../utils/list_helper')
+const listHelper = require('../utils/list_helper')
 const blogs = [{
   _id: '5a422a851b54a676234d17f7',
   title: 'React patterns',
@@ -44,30 +44,30 @@ const blogs = [{
 }]
 
 test('dummy returns one', () => {
-  expect(dummy([])).toBe(1)
+  expect(listHelper.dummy([])).toBe(1)
 })
 
 describe('total likes', () => {
   test('of empty list is zero', () => {
-    expect(totalLikes([])).toBe(0)
+    expect(listHelper.totalLikes([])).toBe(0)
   })
 
   test('when list has only one blog, equals the likes of that', () => {
-    expect(totalLikes([blogs[1]])).toBe(5)
+    expect(listHelper.totalLikes([blogs[1]])).toBe(5)
   })
 
   test('of a bigger list is calculated right', () => {
-    expect(totalLikes(blogs)).toBe(36)
+    expect(listHelper.totalLikes(blogs)).toBe(36)
   })
 })
 
 describe('favorite blog', () => {
   test('of empty list is null', () => {
-    expect(favoriteBlog([])).toEqual(null)
+    expect(listHelper.favoriteBlog([])).toEqual(null)
   })
 
   test('when list has only one blog, equals that blog', () => {
-    expect(favoriteBlog([blogs[0]])).toEqual({
+    expect(listHelper.favoriteBlog([blogs[0]])).toEqual({
       title: 'React patterns',
       author: 'Michael Chan',
       likes: 7,
@@ -75,7 +75,7 @@ describe('favorite blog', () => {
   })
 
   test('of mock list is \'Canonical string reduction\'', () => {
-    expect(favoriteBlog(blogs)).toEqual({
+    expect(listHelper.favoriteBlog(blogs)).toEqual({
       title: 'Canonical string reduction',
       author: 'Edsger W. Dijkstra',
       likes: 12,
@@ -85,20 +85,40 @@ describe('favorite blog', () => {
 
 describe('most blogs', () => {
   test('of empty list is null', () => {
-    expect(mostBlogs([])).toEqual(null)
+    expect(listHelper.mostBlogs([])).toEqual(null)
   })
 
   test('when list has only one blog, equals that author', () => {
-    expect(mostBlogs([blogs[0]])).toEqual({
+    expect(listHelper.mostBlogs([blogs[0]])).toEqual({
       author: 'Michael Chan',
       blogs: 1,
     })
   })
 
   test('of mock list is \'Robert C. Martin\'', () => {
-    expect(mostBlogs(blogs)).toEqual({
+    expect(listHelper.mostBlogs(blogs)).toEqual({
       author: 'Robert C. Martin',
       blogs: 3,
+    })
+  })
+})
+
+describe('most likes', () => {
+  test('of empty list is null', () => {
+    expect(listHelper.mostLikes([])).toEqual(null)
+  })
+
+  test('when list has only one blog, equals that author', () => {
+    expect(listHelper.mostLikes([blogs[0]])).toEqual({
+      author: 'Michael Chan',
+      likes: 7,
+    })
+  })
+
+  test('of mock list is \'Edsger W. Dijkstra\'', () => {
+    expect(listHelper.mostLikes(blogs)).toEqual({
+      author: 'Edsger W. Dijkstra',
+      likes: 17,
     })
   })
 })
