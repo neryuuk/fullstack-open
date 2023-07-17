@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const noteSchema = new mongoose.Schema({
+module.exports = mongoose.model('Note', new mongoose.Schema({
   content: {
     type: String,
     minLength: 5,
@@ -13,6 +13,4 @@ const noteSchema = new mongoose.Schema({
     delete result._id
     delete result.__v
   }
-})
-
-module.exports = mongoose.model('Note', noteSchema)
+}))
