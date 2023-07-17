@@ -1,4 +1,4 @@
-const { dummy, totalLikes, favoriteBlog } = require('../utils/list_helper')
+const { dummy, totalLikes, favoriteBlog, mostBlogs } = require('../utils/list_helper')
 const blogs = [{
   _id: '5a422a851b54a676234d17f7',
   title: 'React patterns',
@@ -79,6 +79,26 @@ describe('favorite blog', () => {
       title: 'Canonical string reduction',
       author: 'Edsger W. Dijkstra',
       likes: 12,
+    })
+  })
+})
+
+describe('most blogs', () => {
+  test('of empty list is null', () => {
+    expect(mostBlogs([])).toEqual(null)
+  })
+
+  test('when list has only one blog, equals that author', () => {
+    expect(mostBlogs([blogs[0]])).toEqual({
+      author: 'Michael Chan',
+      blogs: 1,
+    })
+  })
+
+  test('of mock list is \'Robert C. Martin\'', () => {
+    expect(mostBlogs(blogs)).toEqual({
+      author: 'Robert C. Martin',
+      blogs: 3,
     })
   })
 })

@@ -17,4 +17,17 @@ const favoriteBlog = blogs => {
   }
 }
 
-module.exports = { dummy, totalLikes, favoriteBlog }
+const mostBlogs = blogs => {
+  if (!blogs || !blogs.length) return null
+
+  return blogs.reduce((final, post) => {
+    const author = final.find(item => item.author === post.author)
+
+    if (!author) final.push({ author: post.author, blogs: 1 })
+    else author.blogs += 1
+
+    return final
+  }, []).reduce((final, author) => (final.blogs > author.blogs) ? final : author)
+}
+
+module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs }
