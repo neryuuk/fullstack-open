@@ -50,6 +50,24 @@ describe('POST /api/blogs', () => {
     expect(blogs).not.toHaveLength(helper.testBlogs.length)
     expect(blogs.map(({ title }) => title)).toContain(blog.title)
   })
+
+  test('missing field likes defaults to 0', async () => {
+    const blog = {
+      title: 'Yet Another Blog Post',
+      author: 'John Doe',
+      url: 'https://john.doe/blog/yet-another-blog-post',
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(blog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const blogs = await helper.blogsInDb()
+    expect(blogs).not.toHaveLength(helper.testBlogs.length)
+    expect(blogs.map(({ title }) => title)).toContain(blog.title)
+  })
 })
 
 afterAll(async () => {
