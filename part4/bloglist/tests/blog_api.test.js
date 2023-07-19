@@ -25,6 +25,11 @@ describe('/api/blogs', () => {
     expect(response.body).toHaveLength(helper.testBlogs.length)
   }, 15 * SECONDS)
 
+  test('for unique identifier', async () => {
+    const response = await api.get('/api/blogs')
+    expect(response.body[0].id).toBeDefined()
+  }, 15 * SECONDS)
+
   afterAll(async () => {
     await mongoose.connection.close()
   })
