@@ -2,6 +2,9 @@ const router = require('express').Router()
 const Blog = require('../models/blog')
 
 router.route('/').post(async ({ body }, response) => {
+  if (!body.title) return response.status(400).json({ error: 'title is missing' })
+  if (!body.url) return response.status(400).json({ error: 'url is missing' })
+
   const result = await new Blog({
     title: body.title,
     author: body.author,

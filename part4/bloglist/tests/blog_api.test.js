@@ -4,6 +4,12 @@ const helper = require('./test_helper')
 const Blog = require('../models/blog')
 const api = supertest(require('../app'))
 const SECONDS = 1000
+const blog = {
+  title: 'Yet Another Blog Post',
+  author: 'John Doe',
+  url: 'https://john.doe/blog/yet-another-blog-post',
+  likes: 42,
+}
 
 mongoose.set('bufferTimeoutMS', 60 * SECONDS)
 
@@ -33,13 +39,6 @@ describe('GET /api/blogs', () => {
 
 describe('POST /api/blogs', () => {
   test('a valid blog can be added', async () => {
-    const blog = {
-      title: 'Yet Another Blog Post',
-      author: 'John Doe',
-      url: 'https://john.doe/blog/yet-another-blog-post',
-      likes: 42,
-    }
-
     await api
       .post('/api/blogs')
       .send(blog)
@@ -51,22 +50,47 @@ describe('POST /api/blogs', () => {
     expect(blogs.map(({ title }) => title)).toContain(blog.title)
   })
 
-  test('missing field likes defaults to 0', async () => {
-    const blog = {
-      title: 'Yet Another Blog Post',
-      author: 'John Doe',
-      url: 'https://john.doe/blog/yet-another-blog-post',
-    }
+  test('if likes is missing defaults to 0', async () => {
+    const errorBlog = { ...blog }
+    delete errorBlog.likes
 
     await api
       .post('/api/blogs')
-      .send(blog)
+      .send(errorBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
     const blogs = await helper.blogsInDb()
     expect(blogs).not.toHaveLength(helper.testBlogs.length)
-    expect(blogs.map(({ title }) => title)).toContain(blog.title)
+    expect(blogs.map(({ title }) => title)).toContain(errorBlog.title)
+  })
+
+  test('if title is missing it fails', async () => {
+    const errorBlog = { ...blog }
+    delete errorBlog.title
+
+    await api
+      .post('/api/blogs')
+      .send(errorBlog)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    const blogs = await helper.blogsInDb()
+    expect(blogs).toHaveLength(helper.testBlogs.length)
+  })
+
+  test('if url is missing it fails', async () => {
+    const errorBlog = { ...blog }
+    delete errorBlog.url
+
+    await api
+      .post('/api/blogs')
+      .send(errorBlog)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    const blogs = await helper.blogsInDb()
+    expect(blogs).toHaveLength(helper.testBlogs.length)
   })
 })
 
