@@ -18,12 +18,11 @@ router.route('/').post(async ({ body }, response) => {
   response.json(blogs)
 })
 
-router.route('/:id').get(({ params }, response, next) => {
-  Blog.findById(params.id).then(blog => {
-    if (blog) response.json(blog)
-    else next()
-  }).catch(error => next(error))
-}).put(({ body, params }, response, next) => {
+router.route('/:id').get(async ({ params }, response, next) => {
+  const blog = await Blog.findById(params.id)
+  if (blog) response.json(blog)
+  else next()
+}).put(async ({ body, params }, response, next) => {
   const blog = {
     title: body.title,
     author: body.author,
@@ -36,9 +35,9 @@ router.route('/:id').get(({ params }, response, next) => {
     context: 'query',
   }
 
-  Blog.findByIdAndUpdate(params.id, blog, options)
-    .then(updated => response.json(updated))
-    .catch(error => next(error))
+  const updated = await Blog.findByIdAndUpdate(params.id, blog, options)
+  if (updated) response.json(updated)
+  else next()
 }).delete(async ({ params }, response) => {
   await Blog.findByIdAndRemove(params.id)
   response.status(204).end()

@@ -4,6 +4,7 @@ const helper = require('./test_helper')
 const Blog = require('../models/blog')
 const api = supertest(require('../app'))
 const SECONDS = 1000
+const invalidId = '5a3d5da59070081a82a3445'
 const blog = {
   title: 'Yet Another Blog Post',
   author: 'John Doe',
@@ -102,19 +103,57 @@ describe('DELETE /api/blogs', () => {
       .delete(`/api/blogs/${blogToDelete.id}`)
       .expect(204)
 
-    const notesAtEnd = await helper.blogsInDb()
-    expect(notesAtEnd).toHaveLength(helper.testBlogs.length - 1)
-    expect(notesAtEnd).not.toContainEqual(blogToDelete)
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.testBlogs.length - 1)
+    expect(blogsAtEnd).not.toContainEqual(blogToDelete)
   })
 
   test('fails with status code 400 if id is invalid', async () => {
-    const invalidId = '5a3d5da59070081a82a3445'
     await api
       .delete(`/api/blogs/${invalidId}`)
       .expect(400)
 
-    const notesAtEnd = await helper.blogsInDb()
-    expect(notesAtEnd).toHaveLength(helper.testBlogs.length)
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.testBlogs.length)
+  })
+})
+
+describe('PUT /api/blogs', () => {
+  test('succeeds with status code 200', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToUpdate = blogsAtStart[0]
+    blogToUpdate.likes = 42
+    const updated = await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(blogToUpdate)
+      .expect(200)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.testBlogs.length)
+    expect(updated.body).toEqual(blogToUpdate)
+  })
+
+  test('fails with status code 400 if id is invalid', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToUpdate = blogsAtStart[0]
+    blogToUpdate.likes = 42
+    await api
+      .put(`/api/blogs/${invalidId}`)
+      .send(blogToUpdate)
+      .expect(400)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.testBlogs.length)
+    expect(blogsAtEnd).not.toContainEqual(blogToUpdate)
+  })
+
+  test('fails with status code 404 if id is not found', async () => {
+    await api
+      .put('/api/blogs/000000000000000000000000')
+      .expect(404)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.testBlogs.length)
   })
 })
 
