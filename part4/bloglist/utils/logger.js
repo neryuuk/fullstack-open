@@ -1,5 +1,11 @@
-const info = (...params) => { console.log(...params) }
+const { NODE_ENV } = process.env
 
-const error = (...params) => { console.error(...params) }
+const info = (...params) => {
+  if (NODE_ENV !== 'test') console.log(...params)
+}
+
+const error = (...params) => {
+  if (NODE_ENV !== 'test') console.error(...params)
+}
 
 module.exports = { info, error }

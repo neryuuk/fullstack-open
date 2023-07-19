@@ -10,10 +10,9 @@ router.route('/').post(({ body }, response, next) => {
   }).save()
     .then(result => response.json(result))
     .catch(error => next(error))
-}).get((_, response, next) => {
-  Blog.find({})
-    .then(blogs => response.json(blogs))
-    .catch(error => next(error))
+}).get(async (_, response) => {
+  const blogs = await Blog.find({})
+  response.json(blogs)
 })
 
 router.route('/:id').get(({ params }, response, next) => {
