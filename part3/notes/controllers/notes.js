@@ -1,44 +1,39 @@
 const router = require('express').Router()
 const Note = require('../models/note')
 
-router.route('/').post(({ body }, response, next) => {
+router.route('/').post(async ({ body }, response) => {
   if (!body.content) return response.status(400).json({ error: 'content is missing' })
 
-  new Note({
+  const result = await new Note({
     content: body.content,
     important: body.important || false,
   }).save()
-    .then(result => response.json(result))
-    .catch(error => next(error))
-}).get((_, response, next) => {
-  Note.find({})
-    .then(notes => response.json(notes))
-    .catch(error => next(error))
+  response.status(201).json(result)
+}).get(async (_, response) => {
+  const notes = await Note.find({})
+  response.json(notes)
 })
 
-router.route('/:id').get(({ params }, response, next) => {
-  Note.findById(params.id).then(note => {
-    if (note) response.json(note)
-    else next()
-  }).catch(error => next(error))
-}).put(({ body, params }, response, next) => {
+router.route('/:id').get(async ({ params }, response) => {
+  const note = await Note.findById(params.id)
+  if (note) response.json(note)
+  else response.status(404).end()
+}).put(async ({ body, params }, response) => {
   const note = {
     content: body.content,
-    important: body.important
+    important: body.important,
   }
   const options = {
     new: true,
     runValidators: true,
-    context: 'query'
+    context: 'query',
   }
 
-  Note.findByIdAndUpdate(params.id, note, options)
-    .then(updated => response.json(updated))
-    .catch(error => next(error))
-}).delete(({ params }, response, next) => {
-  Note.findByIdAndRemove(params.id)
-    .then(() => response.status(204).end())
-    .catch(error => next(error))
+  const updated = await Note.findByIdAndUpdate(params.id, note, options)
+  response.json(updated)
+}).delete(async ({ params }, response) => {
+  await Note.findByIdAndRemove(params.id)
+  response.status(204).end()
 })
 
 module.exports = router
