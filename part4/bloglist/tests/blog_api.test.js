@@ -12,7 +12,7 @@ beforeEach(async () => {
   await Promise.all(helper.testBlogs.map(blog => new Blog(blog).save()))
 }, 15 * SECONDS)
 
-describe('/api/blogs', () => {
+describe('GET /api/blogs', () => {
   test('blogs are returned as json', async () => {
     await api
       .get('/api/blogs')
@@ -29,8 +29,29 @@ describe('/api/blogs', () => {
     const response = await api.get('/api/blogs')
     expect(response.body[0].id).toBeDefined()
   }, 15 * SECONDS)
+})
 
-  afterAll(async () => {
-    await mongoose.connection.close()
+describe('POST /api/blogs', () => {
+  test('a valid blog can be added', async () => {
+    const blog = {
+      title: 'Yet Another Blog Post',
+      author: 'John Doe',
+      url: 'https://john.doe/blog/yet-another-blog-post',
+      likes: 42,
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(blog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const blogs = await helper.blogsInDb()
+    expect(blogs).not.toHaveLength(helper.testBlogs.length)
+    expect(blogs.map(({ title }) => title)).toContain(blog.title)
   })
+})
+
+afterAll(async () => {
+  await mongoose.connection.close()
 })
