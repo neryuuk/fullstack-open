@@ -39,10 +39,9 @@ router.route('/:id').get(({ params }, response, next) => {
   Blog.findByIdAndUpdate(params.id, blog, options)
     .then(updated => response.json(updated))
     .catch(error => next(error))
-}).delete(({ params }, response, next) => {
-  Blog.findByIdAndRemove(params.id)
-    .then(() => response.status(204).end())
-    .catch(error => next(error))
+}).delete(async ({ params }, response) => {
+  await Blog.findByIdAndRemove(params.id)
+  response.status(204).end()
 })
 
 module.exports = router
