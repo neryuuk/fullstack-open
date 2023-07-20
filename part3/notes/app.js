@@ -5,6 +5,7 @@ const cors = require('cors')
 const { MONGODB_URI, NODE_ENV } = require('./utils/config')
 const middleware = require('./utils/middleware')
 const logger = require('./utils/logger')
+const loginRouter = require('./controllers/login')
 const notesRouter = require('./controllers/notes')
 const usersRouter = require('./controllers/users')
 
@@ -23,6 +24,7 @@ app.use(express.json())
 if (NODE_ENV !== 'test') app.use(middleware.requestLogger)
 app.use(express.static('build'))
 
+app.use('/api/login', loginRouter)
 app.use('/api/notes', notesRouter)
 app.use('/api/users', usersRouter)
 
