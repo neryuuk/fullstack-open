@@ -16,7 +16,9 @@ router.route('/').post(async ({ body }, response) => {
   const result = await new User({ username, name, passwordHash }).save()
   response.status(201).json(result)
 }).get(async (_, response) => {
-  const notes = await User.find({})
+  const notes = await User
+    .find({})
+    .populate('notes', { content: 1, important: 1 })
   response.json(notes)
 })
 
