@@ -4,6 +4,19 @@ const logger = require('./logger')
 
 const logHandler = morgan('dev')
 
+const tokenHandler = (request, _, next) => {
+  const auth = request.get('authorization')
+  if (auth && auth.startsWith('Bearer ')) request.token = auth.replace('Bearer ', '')
+  next()
+}
+
+const authHandler = (request, response, next) => {
+  const decoded = jwt.verify(request.token, process.env.SECRET)
+  if (!decoded.id) return response.status(401).json({ error: 'token invalid' })
+  request.body.userId = decoded.id
+  next()
+}
+
 const fourOhFourHandler = (_, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
@@ -24,13 +37,10 @@ const errorHandler = (error, _, response, next) => {
   next(error)
 }
 
-const authHandler = (request, response, next) => {
-  const authorization = request.get('authorization')
-  const token = authorization && authorization.startsWith('Bearer ') && authorization.replace('Bearer ', '')
-  const decoded = jwt.verify(token, process.env.SECRET)
-  if (!decoded.id) return response.status(401).json({ error: 'token invalid' })
-  request.body.userId = decoded.id
-  next()
+module.exports = {
+  logHandler,
+  tokenHandler,
+  authHandler,
+  fourOhFourHandler,
+  errorHandler,
 }
-
-module.exports = { logHandler, fourOhFourHandler, errorHandler, authHandler }
