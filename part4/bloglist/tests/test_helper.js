@@ -57,8 +57,12 @@ const usersInDb = async () => {
 
 const resetBlogs = async () => {
   await resetUsers()
+  const userId = (await usersInDb())[0].id
   await Blog.deleteMany({})
-  await Blog.insertMany(testBlogs)
+  await Blog.insertMany(testBlogs.map(blog => {
+    blog.user = userId
+    return blog
+  }))
 }
 
 const resetUsers = async () => {
@@ -68,6 +72,14 @@ const resetUsers = async () => {
     name: 'root',
     passwordHash: await bcrypt.hash('sekret', 10),
   }).save()
+}
+
+const login = async () => {
+  const loggedIn = await api.post('/api/login').send({
+    username: 'root',
+    password: 'sekret',
+  })
+  return loggedIn.body.token
 }
 
 const closeConnection = async () => {
@@ -82,5 +94,6 @@ module.exports = {
   usersInDb,
   resetBlogs,
   resetUsers,
+  login,
   closeConnection,
 }
