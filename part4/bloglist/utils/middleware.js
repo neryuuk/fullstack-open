@@ -13,7 +13,7 @@ const tokenHandler = (request, _, next) => {
 const authHandler = (request, response, next) => {
   const decoded = jwt.verify(request.token, process.env.SECRET)
   if (!decoded.id) return response.status(401).json({ error: 'token invalid' })
-  request.body.userId = decoded.id
+  request.userId = decoded.id
   next()
 }
 

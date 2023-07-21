@@ -3,11 +3,11 @@ const { authHandler } = require('../utils/middleware')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
-router.route('/').post(authHandler, async ({ body }, response) => {
+router.route('/').post(authHandler, async ({ body, userId }, response) => {
   if (!body.title) return response.status(400).json({ error: 'title is missing' })
   if (!body.url) return response.status(400).json({ error: 'url is missing' })
 
-  const user = await User.findById(body.userId)
+  const user = await User.findById(userId)
   const result = await new Blog({
     title: body.title,
     author: body.author,
@@ -46,7 +46,10 @@ router.route('/:id').get(async ({ params }, response, next) => {
   const updated = await Blog.findByIdAndUpdate(params.id, blog, options)
   if (updated) response.json(updated)
   else next()
-}).delete(async ({ params }, response) => {
+}).delete(authHandler, async ({ params, userId }, response) => {
+  const blog = await Blog.findById(params.id)
+  if (!blog) return response.status(404).json({ error: 'item not found' })
+  if (blog?.user?.toString() !== userId) return response.status(401).json({ error: 'that blog is not yours to delete' })
   await Blog.findByIdAndRemove(params.id)
   response.status(204).end()
 })
