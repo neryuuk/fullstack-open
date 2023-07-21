@@ -1,20 +1,28 @@
 const router = require('express').Router()
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 router.route('/').post(async ({ body }, response) => {
   if (!body.title) return response.status(400).json({ error: 'title is missing' })
   if (!body.url) return response.status(400).json({ error: 'url is missing' })
+  if (!body.userId) return response.status(400).json({ error: 'userId is missing' })
 
+  const user = await User.findById(body.userId)
   const result = await new Blog({
     title: body.title,
     author: body.author,
     url: body.url,
     likes: body.likes || 0,
+    user: user.id,
   }).save()
+  user.blogs = user.blogs.concat(result._id)
+  await user.save()
 
   response.status(201).json(result)
 }).get(async (_, response) => {
-  const blogs = await Blog.find({})
+  const blogs = await Blog
+    .find({})
+    .populate('user', { username: 1, name: 1 })
   response.json(blogs)
 })
 

@@ -17,9 +17,10 @@ router.route('/').post(async ({ body }, response) => {
   const result = await new User({ username, name, passwordHash }).save()
   response.status(201).json(result)
 }).get(async (_, response) => {
-  const notes = await User
+  const result = await User
     .find({})
-  response.json(notes)
+    .populate('blogs', { title: 1, author: 1, url: 1, likes: 1 })
+  response.json(result)
 })
 
 module.exports = router

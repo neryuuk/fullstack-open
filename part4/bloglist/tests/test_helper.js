@@ -1,5 +1,17 @@
+const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
+const api = require('supertest')(require('../app'))
 const Blog = require('../models/blog')
 const User = require('../models/user')
+
+mongoose.set('bufferTimeoutMS', 60 * 1000)
+
+const blog = {
+  title: 'Yet Another Blog Post',
+  author: 'John Doe',
+  url: 'https://john.doe/blog/yet-another-blog-post',
+  likes: 42,
+}
 
 const testBlogs = [{
   title: 'React patterns',
@@ -43,4 +55,32 @@ const usersInDb = async () => {
     .map(user => user.toJSON())
 }
 
-module.exports = { testBlogs, blogsInDb, usersInDb }
+const resetBlogs = async () => {
+  await resetUsers()
+  await Blog.deleteMany({})
+  await Blog.insertMany(testBlogs)
+}
+
+const resetUsers = async () => {
+  await User.deleteMany({})
+  await new User({
+    username: 'root',
+    name: 'root',
+    passwordHash: await bcrypt.hash('sekret', 10),
+  }).save()
+}
+
+const closeConnection = async () => {
+  await mongoose.connection.close()
+}
+
+module.exports = {
+  api,
+  blog,
+  testBlogs,
+  blogsInDb,
+  usersInDb,
+  resetBlogs,
+  resetUsers,
+  closeConnection,
+}

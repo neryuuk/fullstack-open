@@ -1,23 +1,13 @@
-const bcrypt = require('bcrypt')
-const supertest = require('supertest')
-const User = require('../models/user')
 const helper = require('./test_helper')
-const api = supertest(require('../app'))
 
 describe('when there is initially one user in db', () => {
-  beforeEach(async () => {
-    await User.deleteMany({})
-    const passwordHash = await bcrypt.hash('sekret', 10)
-    await new User({ username: 'root', name: 'root', passwordHash }).save()
-  })
+  beforeEach(helper.resetUsers)
 
   test('creation succeeds with a fresh username', async () => {
     const usersAtStart = await helper.usersInDb()
     const newUser = { username: 'neryuuk', name: 'Nelson', password: 'senha' }
 
-    await api
-      .post('/api/users')
-      .send(newUser)
+    await helper.api.post('/api/users').send(newUser)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
@@ -31,9 +21,7 @@ describe('when there is initially one user in db', () => {
     const usersAtStart = await helper.usersInDb()
     const newUser = { username: 'root', name: 'root', password: 'root' }
 
-    const result = await api
-      .post('/api/users')
-      .send(newUser)
+    const result = await helper.api.post('/api/users').send(newUser)
       .expect(400)
       .expect('Content-Type', /application\/json/)
 
@@ -47,9 +35,7 @@ describe('when there is initially one user in db', () => {
     const usersAtStart = await helper.usersInDb()
     const newUser = { name: 'Nelson Antunes', password: 'senha' }
 
-    const result = await api
-      .post('/api/users')
-      .send(newUser)
+    const result = await helper.api.post('/api/users').send(newUser)
       .expect(400)
       .expect('Content-Type', /application\/json/)
 
@@ -63,9 +49,7 @@ describe('when there is initially one user in db', () => {
     const usersAtStart = await helper.usersInDb()
     const newUser = { username: 'neryuuk', password: 'senha' }
 
-    const result = await api
-      .post('/api/users')
-      .send(newUser)
+    const result = await helper.api.post('/api/users').send(newUser)
       .expect(400)
       .expect('Content-Type', /application\/json/)
 
@@ -79,9 +63,7 @@ describe('when there is initially one user in db', () => {
     const usersAtStart = await helper.usersInDb()
     const newUser = { username: 'neryuuk', name: 'Nelson Antunes' }
 
-    const result = await api
-      .post('/api/users')
-      .send(newUser)
+    const result = await helper.api.post('/api/users').send(newUser)
       .expect(400)
       .expect('Content-Type', /application\/json/)
 
@@ -95,9 +77,7 @@ describe('when there is initially one user in db', () => {
     const usersAtStart = await helper.usersInDb()
     const newUser = { username: 'ne', name: 'Nelson', password: 'senha' }
 
-    const result = await api
-      .post('/api/users')
-      .send(newUser)
+    const result = await helper.api.post('/api/users').send(newUser)
       .expect(400)
       .expect('Content-Type', /application\/json/)
 
@@ -111,9 +91,7 @@ describe('when there is initially one user in db', () => {
     const usersAtStart = await helper.usersInDb()
     const newUser = { username: 'neryuuk', name: 'Nelson', password: 'se' }
 
-    const result = await api
-      .post('/api/users')
-      .send(newUser)
+    const result = await helper.api.post('/api/users').send(newUser)
       .expect(400)
       .expect('Content-Type', /application\/json/)
 
@@ -123,3 +101,5 @@ describe('when there is initially one user in db', () => {
     expect(usersAtEnd).toEqual(usersAtStart)
   })
 })
+
+afterAll(helper.closeConnection)
