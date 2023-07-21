@@ -8,6 +8,8 @@ router.route('/').post(async ({ body }, response) => {
   if (!username) return response.status(400).json({ error: 'username is missing' })
   if (!name) return response.status(400).json({ error: 'name is missing' })
   if (!password) return response.status(400).json({ error: 'password is missing' })
+  if (username.length < 3) return response.status(400).json({ error: 'username must be 3 or more characters long' })
+  if (password.length < 3) return response.status(400).json({ error: 'password must be 3 or more characters long' })
 
   const saltRounds = 10
   const passwordHash = await bcrypt.hash(body.password, saltRounds)
