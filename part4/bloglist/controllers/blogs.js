@@ -1,11 +1,11 @@
 const router = require('express').Router()
+const { authHandler } = require('../utils/middleware')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
-router.route('/').post(async ({ body }, response) => {
+router.route('/').post(authHandler, async ({ body }, response) => {
   if (!body.title) return response.status(400).json({ error: 'title is missing' })
   if (!body.url) return response.status(400).json({ error: 'url is missing' })
-  if (!body.userId) return response.status(400).json({ error: 'userId is missing' })
 
   const user = await User.findById(body.userId)
   const result = await new Blog({

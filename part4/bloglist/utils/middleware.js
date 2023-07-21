@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken')
 const morgan = require('morgan')
 const logger = require('./logger')
 
@@ -23,4 +24,13 @@ const errorHandler = (error, _, response, next) => {
   next(error)
 }
 
-module.exports = { logHandler, fourOhFourHandler, errorHandler }
+const authHandler = (request, response, next) => {
+  const authorization = request.get('authorization')
+  const token = authorization && authorization.startsWith('Bearer ') && authorization.replace('Bearer ', '')
+  const decoded = jwt.verify(token, process.env.SECRET)
+  if (!decoded.id) return response.status(401).json({ error: 'token invalid' })
+  request.body.userId = decoded.id
+  next()
+}
+
+module.exports = { logHandler, fourOhFourHandler, errorHandler, authHandler }
