@@ -4,16 +4,16 @@ const logger = require('./logger')
 
 const logHandler = morgan('dev')
 
-const tokenHandler = (request, _, next) => {
+const tokenExtractor = (request, _, next) => {
   const auth = request.get('authorization')
   if (auth && auth.startsWith('Bearer ')) request.token = auth.replace('Bearer ', '')
   next()
 }
 
-const authHandler = (request, response, next) => {
+const userExtractor = (request, response, next) => {
   const decoded = jwt.verify(request.token, process.env.SECRET)
-  if (!decoded.id) return response.status(401).json({ error: 'token invalid' })
-  request.userId = decoded.id
+  if (!decoded.id) return response.status(401).json({ error: 'jwt token is invalid' })
+  request.user = decoded.id
   next()
 }
 
@@ -39,8 +39,8 @@ const errorHandler = (error, _, response, next) => {
 
 module.exports = {
   logHandler,
-  tokenHandler,
-  authHandler,
+  tokenExtractor,
+  userExtractor,
   fourOhFourHandler,
   errorHandler,
 }

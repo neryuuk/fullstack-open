@@ -1,22 +1,22 @@
 const router = require('express').Router()
-const { authHandler } = require('../utils/middleware')
+const { userExtractor } = require('../utils/middleware')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
-router.route('/').post(authHandler, async ({ body, userId }, response) => {
+router.route('/').post(userExtractor, async ({ body, user }, response) => {
   if (!body.title) return response.status(400).json({ error: 'title is missing' })
   if (!body.url) return response.status(400).json({ error: 'url is missing' })
 
-  const user = await User.findById(userId)
+  const userFromDB = await User.findById(user)
   const result = await new Blog({
     title: body.title,
     author: body.author,
     url: body.url,
     likes: body.likes || 0,
-    user: user.id,
+    user: userFromDB.id,
   }).save()
-  user.blogs = user.blogs.concat(result._id)
-  await user.save()
+  userFromDB.blogs = userFromDB.blogs.concat(result._id)
+  await userFromDB.save()
 
   response.status(201).json(result)
 }).get(async (_, response) => {
@@ -46,10 +46,10 @@ router.route('/:id').get(async ({ params }, response, next) => {
   const updated = await Blog.findByIdAndUpdate(params.id, blog, options)
   if (updated) response.json(updated)
   else next()
-}).delete(authHandler, async ({ params, userId }, response) => {
+}).delete(userExtractor, async ({ params, user }, response) => {
   const blog = await Blog.findById(params.id)
   if (!blog) return response.status(404).json({ error: 'item not found' })
-  if (blog?.user?.toString() !== userId) return response.status(401).json({ error: 'that blog is not yours to delete' })
+  if (blog?.user?.toString() !== user) return response.status(401).json({ error: 'that blog is not yours to delete' })
   await Blog.findByIdAndRemove(params.id)
   response.status(204).end()
 })
