@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import Note from './components/Note'
-import {getAll, create, update} from './services/notes'
+import { getAll, create, update } from './services/notes'
+import { login } from './services/login'
 import Notification from './components/Notification'
+import Login from './components/Login'
 import Footer from './components/Footer'
 
 const App = () => {
@@ -9,6 +11,9 @@ const App = () => {
   const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [user, setUser] = useState(null)
 
   const hook = () => {
     getAll().then(data => {
@@ -32,8 +37,29 @@ const App = () => {
     })
   }
 
-  const handleNoteChange = (event) => {
-    setNewNote(event.target.value)
+  const handleField = ({ target }) => {
+    const methods = {
+      note: setNewNote,
+      username: setUsername,
+      password: setPassword
+    }
+
+    methods[target.id](target.value)
+  }
+
+  const handleLogin = async event => {
+    event.preventDefault()
+
+    try {
+      const response = await login({ username, password })
+      console.log(response, username, password)
+      setUser(response)
+      setUsername('')
+      setPassword('')
+    } catch (exception) {
+      setErrorMessage('Wrong credentials')
+      setTimeout(() => { setErrorMessage(null) }, 5000)
+    }
   }
 
   const toggleImportanceOf = id => {
@@ -41,13 +67,9 @@ const App = () => {
     const changeNote = { ...note, important: !note.important }
     update(id, changeNote).then(data => {
       setNotes(notes.map(note => note.id !== id ? note : data))
-    }).catch(error => {
-      setErrorMessage(
-        `Note '${note.content}' was already removed from server`
-      )
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+    }).catch(_ => {
+      setErrorMessage(`Note '${note.content}' was already removed from server`)
+      setTimeout(() => { setErrorMessage(null) }, 5000)
 
       setNotes(notes.filter(n => n.id !== id))
     })
@@ -61,6 +83,12 @@ const App = () => {
     <div>
       <h1>Notes</h1>
       <Notification message={errorMessage} />
+      {user === null && <Login
+        username={username}
+        password={password}
+        handleField={handleField}
+        handleLogin={handleLogin}
+      />}
       <div>
         <button onClick={() => setShowAll(!showAll)}>
           show {showAll ? 'important' : 'all'}
@@ -78,7 +106,7 @@ const App = () => {
         </ul>
       </ul>
       <form onSubmit={addNote}>
-        <input value={newNote} onChange={handleNoteChange} />
+        <input id='note' value={newNote} onChange={handleField} />
         <button type="submit">save</button>
       </form>
       <Footer />
