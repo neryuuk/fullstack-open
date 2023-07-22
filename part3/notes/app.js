@@ -24,6 +24,7 @@ app.use(express.json())
 if (NODE_ENV !== 'test') app.use(middleware.requestLogger)
 app.use(express.static('build'))
 
+app.use(middleware.tokenExtractor)
 app.use('/api/login', loginRouter)
 app.use('/api/notes', notesRouter)
 app.use('/api/users', usersRouter)

@@ -1,31 +1,19 @@
-const jwt = require('jsonwebtoken')
 const router = require('express').Router()
 const Note = require('../models/note')
 const User = require('../models/user')
+const { userExtractor } = require('../utils/middleware')
 
-const getTokenFrom = request => {
-  const authorization = request.get('authorization')
-  return (authorization && authorization.startsWith('Bearer '))
-    ? authorization.replace('Bearer ', '')
-    : null
-}
+router.route('/').post(userExtractor, async ({ body, user }, response) => {
+  if (!body.content) return response.status(400).json({ error: 'content is missing' })
 
-router.route('/').post(async (request, response) => {
-  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'token invalid' })
-  }
-
-  if (!request.body.content) return response.status(400).json({ error: 'content is missing' })
-
-  const user = await User.findById(request.body.userId)
+  const userFromDB = await User.findById(user)
   const result = await new Note({
-    content: request.body.content,
-    important: request.body.important || false,
-    user: user.id,
+    content: body.content,
+    important: body.important || false,
+    user: userFromDB.id,
   }).save()
-  user.notes = user.notes.concat(result._id)
-  await user.save()
+  userFromDB.notes = userFromDB.notes.concat(result._id)
+  await userFromDB.save()
   response.status(201).json(result)
 }).get(async (_, response) => {
   const notes = await Note

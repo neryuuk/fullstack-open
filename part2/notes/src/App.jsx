@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import Note from './components/Note'
-import { getAll, create, update } from './services/notes'
+import { getAll, create, update, setToken } from './services/notes'
 import { login } from './services/login'
 import Notification from './components/Notification'
 import Login from './components/Login'
 import Footer from './components/Footer'
+import NewNote from './components/NewNote'
 
 const App = () => {
   const [notes, setNotes] = useState([])
@@ -15,13 +16,26 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
-  const hook = () => {
+  useEffect(() => {
     getAll().then(data => {
       setNotes(data)
     }).catch(console.error)
+  }, [])
+
+  useEffect(() => {
+    const storage = window.localStorage.getItem('loggedNoteappUser')
+    if (storage) handleLoggedUser(JSON.parse(storage))
+  }, [])
+
+  const handleLoggedUser = user => {
+    setUser(user)
+    setToken(user?.token)
   }
 
-  useEffect(hook, [])
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedNoteappUser')
+    handleLoggedUser(null)
+  }
 
   const addNote = (event) => {
     event.preventDefault()
@@ -29,9 +43,8 @@ const App = () => {
       content: newNote,
       important: Math.random() > 0.5
     }
-
+    setToken(user.token)
     create(noteObject).then(data => {
-      console.log(data)
       setNotes(notes.concat(data))
       setNewNote('')
     })
@@ -52,8 +65,8 @@ const App = () => {
 
     try {
       const response = await login({ username, password })
-      console.log(response, username, password)
-      setUser(response)
+      window.localStorage.setItem('loggedNoteappUser', JSON.stringify(response))
+      handleLoggedUser(response)
       setUsername('')
       setPassword('')
     } catch (exception) {
@@ -83,32 +96,20 @@ const App = () => {
     <div>
       <h1>Notes</h1>
       <Notification message={errorMessage} />
-      {user === null && <Login
-        username={username}
-        password={password}
-        handleField={handleField}
-        handleLogin={handleLogin}
-      />}
+      <Login {...{ user, username, password, handleField, handleLogin, handleLogout }} />
+      {user && <NewNote {...{ user, addNote, newNote, handleField }} />}
       <div>
         <button onClick={() => setShowAll(!showAll)}>
           show {showAll ? 'important' : 'all'}
         </button>
       </div>
-      <ul>
-        <ul>
-          {notesToShow.map(note =>
-            <Note
-              key={note.id}
-              note={note}
-              toggleImportance={() => toggleImportanceOf(note.id)}
-            />
-          )}
-        </ul>
-      </ul>
-      <form onSubmit={addNote}>
-        <input id='note' value={newNote} onChange={handleField} />
-        <button type="submit">save</button>
-      </form>
+      <ul>{notesToShow.map(note =>
+        <Note
+          key={note.id}
+          note={note}
+          toggleImportance={() => toggleImportanceOf(note.id)}
+        />
+      )}</ul>
       <Footer />
     </div>
   )
