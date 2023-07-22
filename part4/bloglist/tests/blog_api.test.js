@@ -99,14 +99,16 @@ describe('GET /api/blogs', () => {
 describe('PUT /api/blogs', () => {
   test('succeeds with status code 200', async () => {
     const blogsAtStart = await helper.blogsInDb()
-    const blogToUpdate = blogsAtStart[0]
+    const blogToUpdate = { ...blogsAtStart[0] }
     blogToUpdate.likes = 42
-    const updated = await helper.api.put(`/api/blogs/${blogToUpdate.id}`).send(blogToUpdate)
+    await helper.api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(blogToUpdate)
       .expect(200)
 
     const blogsAtEnd = await helper.blogsInDb()
     expect(blogsAtEnd).toHaveLength(helper.testBlogs.length)
-    expect(updated.body).toEqual(blogToUpdate)
+    expect(blogsAtEnd[0]).toEqual(blogToUpdate)
   })
 
   test('fails with status code 400 if id is invalid', async () => {
