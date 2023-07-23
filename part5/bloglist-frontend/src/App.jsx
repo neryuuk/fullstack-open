@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getAll } from './services/blogs'
+import { setToken, getAll } from './services/blogs'
 import { login } from './services/login'
 import Login from './components/Login'
 import Blogs from './components/Blogs'
@@ -14,6 +14,11 @@ const App = () => {
     getAll().then(blogs => setBlogs(blogs))
   }, [])
 
+  useEffect(() => {
+    const storage = window.localStorage.getItem('loggedUser')
+    if (storage) handleLoggedUser(JSON.parse(storage))
+  }, [])
+
   const handleField = ({ target }) => {
     const methods = {
       username: setUsername,
@@ -25,6 +30,7 @@ const App = () => {
 
   const handleLoggedUser = user => {
     setUser(user)
+    setToken(user?.token)
   }
 
   const handleLogin = async event => {
@@ -32,6 +38,7 @@ const App = () => {
 
     try {
       const response = await login({ username, password })
+      window.localStorage.setItem('loggedUser', JSON.stringify(response))
       handleLoggedUser(response)
       setUsername('')
       setPassword('')
@@ -40,9 +47,14 @@ const App = () => {
     }
   }
 
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedNoteappUser')
+    handleLoggedUser(null)
+  }
+
   return <>
     <h2>{user ? 'blogs' : 'log in to application'}</h2>
-    <Login {...{ user, username, password, handleField, handleLogin }} />
+    <Login {...{ user, username, password, handleField, handleLogin, handleLogout }} />
     {user && <Blogs blogs={blogs} />}
   </>
 }
