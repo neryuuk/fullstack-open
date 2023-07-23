@@ -14,6 +14,7 @@ module.exports = mongoose.model('Note', new mongoose.Schema({
 }).set('toJSON', {
   transform: (_, result) => {
     result.id = result._id.toString()
+    result.user = result.user.toString()
     delete result._id
     delete result.__v
   },

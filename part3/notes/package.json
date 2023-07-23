@@ -1,6 +1,6 @@
 {
-  "name": "backend",
-  "version": "0.0.1",
+  "name": "notes-backend",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -14,9 +14,10 @@
   },
   "jest": {
     "testEnvironment": "node",
+    "testTimeout": 15000,
     "globalTeardown": "./tests/teardown.js"
   },
-  "author": "Nelson Antunes",
+  "author": "Nelson Antunes <neryuuk@neryuuk.com>",
   "license": "MIT",
   "dependencies": {
     "bcrypt": "^5.1.0",

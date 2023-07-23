@@ -1,16 +1,8 @@
-const bcrypt = require('bcrypt')
-const supertest = require('supertest')
-const User = require('../models/user')
 const helper = require('./test_helper')
-const api = supertest(require('../app'))
+
+beforeEach(helper.resetUsers)
 
 describe('when there is initially one user in db', () => {
-  beforeEach(async () => {
-    await User.deleteMany({})
-    const passwordHash = await bcrypt.hash('sekret', 10)
-    await new User({ username: 'root', passwordHash }).save()
-  })
-
   test('creation succeeds with a fresh username', async () => {
     const usersAtStart = await helper.usersInDb()
 
@@ -20,7 +12,7 @@ describe('when there is initially one user in db', () => {
       password: 'nova_senha',
     }
 
-    await api
+    await helper.api
       .post('/api/users')
       .send(newUser)
       .expect(201)
@@ -40,7 +32,7 @@ describe('when there is initially one user in db', () => {
       password: 'salainen',
     }
 
-    const result = await api
+    const result = await helper.api
       .post('/api/users')
       .send(newUser)
       .expect(400)
@@ -52,3 +44,5 @@ describe('when there is initially one user in db', () => {
     expect(usersAtEnd).toEqual(usersAtStart)
   })
 })
+
+afterAll(helper.closeConnection)
