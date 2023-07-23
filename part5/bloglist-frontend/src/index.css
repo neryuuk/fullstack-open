@@ -4,8 +4,13 @@
   font-family: 'Roboto', sans-serif;
 }
 
+form {
+  padding: 5px 0 10px 0;
+}
+
 input {
   margin: 0 5px 5px 0;
+  padding: 3px;
 }
 
 label {
@@ -19,4 +24,14 @@ button.anchor {
   cursor: pointer;
   padding: 0;
   text-decoration: underline;
+}
+
+label.loginFields {
+  display: inline-block;
+  min-width: 80px;
+}
+
+label.blogFields {
+  display: inline-block;
+  min-width: 50px;
 }
