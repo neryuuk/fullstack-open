@@ -43,7 +43,7 @@ const App = () => {
 
     try {
       const response = await newNote({ title: newTitle, author: newAuthor, url: newUrl })
-      setNotification(`a new blog ${newTitle} ${newAuthor ? `by ${newAuthor}` : ''}added`)
+      setNotification(`a new blog ${newTitle} ${newAuthor ? `by ${newAuthor} ` : ''}added`)
       setBlogs(blogs.concat(response))
       setNewTitle('')
       setNewAuthor('')
