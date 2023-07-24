@@ -54,3 +54,7 @@ label.blogFields {
   color: green;
   border-color: green;
 }
+
+.togglableBlock {
+  padding: 0 0 10px 0;
+}

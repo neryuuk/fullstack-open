@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { setToken, getAll, newNote } from './services/blogs'
 import { login } from './services/login'
 import Login from './components/Login'
 import Blogs from './components/Blogs'
-import { NewBlog } from './components/NewBlog'
-import { Toast } from './components/Toast'
+import NewBlog from './components/NewBlog'
+import Toast from './components/Toast'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [message, setMessage] = useState(null)
@@ -16,6 +17,7 @@ const App = () => {
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
+  const blogFormRef = useRef()
 
   useEffect(() => {
     getAll().then(blogs => setBlogs(blogs))
@@ -38,7 +40,7 @@ const App = () => {
     methods[target.id](target.value)
   }
 
-  const handleNote = async event => {
+  const handleBlog = async event => {
     event.preventDefault()
 
     try {
@@ -48,6 +50,7 @@ const App = () => {
       setNewTitle('')
       setNewAuthor('')
       setNewUrl('')
+      blogFormRef.current.toggleVisibility()
     } catch (exception) {
       setNotification(exception?.response?.data?.error, true)
     }
@@ -92,7 +95,9 @@ const App = () => {
     <h2>{user ? 'blogs' : 'log in to application'}</h2>
     <Toast message={message} type={error ? 'error' : 'info'} />
     <Login {...{ user, username, password, handleField, handleLogin, handleLogout }} />
-    {user && <NewBlog {...{ newTitle, newAuthor, newUrl, handleNote, handleField }} />}
+    {user && <Togglable buttonLabel='create new blog' ref={blogFormRef}>
+      <NewBlog {...{ newTitle, newAuthor, newUrl, handleBlog, handleField }} />
+    </Togglable>}
     {user && <Blogs blogs={blogs} />}
   </>
 }
