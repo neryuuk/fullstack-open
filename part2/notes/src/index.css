@@ -55,3 +55,7 @@ button.anchor {
   padding: 10px;
   margin-bottom: 10px;
 }
+
+#loginForm {
+  padding: 0 0 10px 0;
+}
