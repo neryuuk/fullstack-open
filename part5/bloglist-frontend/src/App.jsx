@@ -14,9 +14,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [newTitle, setNewTitle] = useState('')
-  const [newAuthor, setNewAuthor] = useState('')
-  const [newUrl, setNewUrl] = useState('')
+  const blogTogglableRef = useRef()
   const blogFormRef = useRef()
 
   useEffect(() => {
@@ -32,25 +30,18 @@ const App = () => {
     const methods = {
       username: setUsername,
       password: setPassword,
-      title: setNewTitle,
-      author: setNewAuthor,
-      url: setNewUrl,
     }
 
     methods[target.id](target.value)
   }
 
-  const handleBlog = async event => {
-    event.preventDefault()
-
+  const handleBlog = async (data) => {
     try {
-      const response = await newNote({ title: newTitle, author: newAuthor, url: newUrl })
-      setNotification(`a new blog ${newTitle} ${newAuthor ? `by ${newAuthor} ` : ''}added`)
+      const response = await newNote(data)
+      setNotification(`a new blog ${data.title} ${data.author ? `by ${data.author} ` : ''}added`)
       setBlogs(blogs.concat(response))
-      setNewTitle('')
-      setNewAuthor('')
-      setNewUrl('')
-      blogFormRef.current.toggleVisibility()
+      blogFormRef.current.clearFields()
+      blogTogglableRef.current.toggleVisibility()
     } catch (exception) {
       setNotification(exception?.response?.data?.error, true)
     }
@@ -95,8 +86,8 @@ const App = () => {
     <h2>{user ? 'blogs' : 'log in to application'}</h2>
     <Toast message={message} type={error ? 'error' : 'info'} />
     <Login {...{ user, username, password, handleField, handleLogin, handleLogout }} />
-    {user && <Togglable buttonLabel='create new blog' ref={blogFormRef}>
-      <NewBlog {...{ newTitle, newAuthor, newUrl, handleBlog, handleField }} />
+    {user && <Togglable buttonLabel='create new blog' ref={blogTogglableRef}>
+      <NewBlog handleBlog={handleBlog} ref={blogFormRef} />
     </Togglable>}
     {user && <Blogs blogs={blogs} />}
   </>

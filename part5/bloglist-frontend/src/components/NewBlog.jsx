@@ -1,7 +1,36 @@
-const NewBlog = ({ newTitle, newAuthor, newUrl, handleBlog, handleField }) => {
+import { useState, forwardRef, useImperativeHandle } from 'react'
+
+const NewBlog = forwardRef(({ handleBlog }, refs) => {
+  const [newTitle, setNewTitle] = useState('')
+  const [newAuthor, setNewAuthor] = useState('')
+  const [newUrl, setNewUrl] = useState('')
+
+  const addBlog = event => {
+    event.preventDefault()
+    handleBlog({ title: newTitle, author: newAuthor, url: newUrl })
+  }
+
+  const handleField = ({ target }) => {
+    const methods = {
+      title: setNewTitle,
+      author: setNewAuthor,
+      url: setNewUrl,
+    }
+
+    methods[target.id](target.value)
+  }
+
+  const clearFields = () => {
+    setNewTitle('')
+    setNewAuthor('')
+    setNewUrl('')
+  }
+
+  useImperativeHandle(refs, () => { return { clearFields } })
+
   return <>
     <h2>create new</h2>
-    <form onSubmit={handleBlog}>
+    <form onSubmit={addBlog}>
       <div>
         <label className='blogFields' htmlFor='title'>title:</label>
         <input id='title' type='text' value={newTitle} onChange={handleField} />
@@ -17,6 +46,6 @@ const NewBlog = ({ newTitle, newAuthor, newUrl, handleBlog, handleField }) => {
       <button type='submit'>create</button>
     </form>
   </>
-}
+})
 
 export default NewBlog
