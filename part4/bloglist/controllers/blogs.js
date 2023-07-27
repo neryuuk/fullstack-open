@@ -18,7 +18,7 @@ router.route('/').post(userExtractor, async ({ body, user }, response) => {
   userFromDB.blogs = userFromDB.blogs.concat(result._id)
   await userFromDB.save()
 
-  response.status(201).json(result)
+  response.status(201).json(await result.populate('user', { username: 1, name: 1 }))
 }).get(async (_, response) => {
   const blogs = await Blog
     .find({})
