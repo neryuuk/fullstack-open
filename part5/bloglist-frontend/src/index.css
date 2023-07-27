@@ -13,6 +13,14 @@ input {
   padding: 3px;
 }
 
+ul {
+  padding-left: 0;
+}
+
+li {
+  list-style: none;
+}
+
 label {
   padding: 0 5px 0 0;
 }
