@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 
 export const Blog = ({ user, blog, handleLike, handleDelete }) => {
@@ -27,4 +28,11 @@ export const Blog = ({ user, blog, handleLike, handleDelete }) => {
       {canDelete && <><br /><button onClick={remove}>remove</button></>}
     </span>}
   </p></li>
+}
+
+Blog.propTypes = {
+  user: PropTypes.object.isRequired,
+  blog: PropTypes.object.isRequired,
+  handleLike: PropTypes.func.isRequired,
+  handleDelete: PropTypes.func.isRequired,
 }

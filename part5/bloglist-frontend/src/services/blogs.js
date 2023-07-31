@@ -12,17 +12,17 @@ export const getAll = () => {
   return request.then(response => response.data)
 }
 
-export const newNote = async data => {
+export const newBlog = async data => {
   const response = await axios.post(baseUrl, data, config)
   return response.data
 }
 
-export const updateNote = async data => {
+export const updateBlog = async data => {
   const response = await axios.put(`${baseUrl}/${data.id}`, data, config)
   return response.data
 }
 
-export const deleteNote = async id => {
+export const deleteBlog = async id => {
   const response = await axios.delete(`${baseUrl}/${id}`, config)
   return response.data
 }

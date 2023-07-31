@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { setToken, getAll, newNote, updateNote, deleteNote } from './services/blogs'
+import { setToken, getAll, newBlog, updateBlog, deleteBlog } from './services/blogs'
 import { login } from './services/login'
 import Login from './components/Login'
 import Blogs from './components/Blogs'
@@ -37,7 +37,7 @@ const App = () => {
 
   const handleBlog = async (data) => {
     try {
-      const response = await newNote(data)
+      const response = await newBlog(data)
       setNotification(`a new blog ${data.title} ${data.author ? `by ${data.author} ` : ''}added`)
       setBlogs(blogs.concat(response).sort((a, b) => b.likes - a.likes))
       blogFormRef.current.clearFields()
@@ -49,7 +49,7 @@ const App = () => {
 
   const handleDelete = async data => {
     try {
-      await deleteNote(data.id)
+      await deleteBlog(data.id)
       setNotification(`Removed blog '${data.title}' ${data.author ? `by ${data.author} ` : ''}`)
       setBlogs(blogs.filter(blog => blog.id !== data.id))
     } catch (exception) {
@@ -59,7 +59,7 @@ const App = () => {
 
   const handleLike = async (data) => {
     try {
-      const response = await updateNote(data)
+      const response = await updateBlog(data)
       setNotification(`you liked '${response.title}'`)
       setBlogs(blogs.map(blog => {
         if (blog.id !== data.id) return blog
