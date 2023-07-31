@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Link from './Link'
+import PropTypes from 'prop-types'
 
 const Login = ({ user, handleLogin, handleLogout }) => {
   const [username, setUsername] = useState('')
@@ -8,7 +9,7 @@ const Login = ({ user, handleLogin, handleLogout }) => {
   const handleField = ({ target }) => {
     const methods = {
       username: setUsername,
-      password: setPassword
+      password: setPassword,
     }
 
     methods[target.id](target.value)
@@ -34,6 +35,12 @@ const Login = ({ user, handleLogin, handleLogout }) => {
       </div>
       <button type='submit'>login</button>
     </form>
+}
+
+Login.propTypes = {
+  user: PropTypes.object,
+  handleLogin: PropTypes.func.isRequired,
+  handleLogout: PropTypes.func.isRequired,
 }
 
 export default Login
