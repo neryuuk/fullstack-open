@@ -16,3 +16,8 @@ export const newNote = async data => {
   const response = await axios.post(baseUrl, data, config)
   return response.data
 }
+
+export const updateNote = async data => {
+  const response = await axios.put(`${baseUrl}/${data.id}`, data, config)
+  return response.data
+}

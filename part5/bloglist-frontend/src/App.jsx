@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { setToken, getAll, newNote } from './services/blogs'
+import { setToken, getAll, newNote, updateNote } from './services/blogs'
 import { login } from './services/login'
 import Login from './components/Login'
 import Blogs from './components/Blogs'
@@ -47,6 +47,20 @@ const App = () => {
     }
   }
 
+  const handleLike = async (data) => {
+    try {
+      const response = await updateNote(data)
+      setNotification(`you liked '${response.title}'`)
+      setBlogs(blogs.map(blog => {
+        if (blog.id !== data.id) return blog
+        return {...blog, likes: response.likes }
+      }))
+    } catch (exception) {
+      setNotification(exception?.response?.data?.error, true)
+    }
+  }
+
+
   const handleLoggedUser = user => {
     setUser(user)
     setToken(user?.token)
@@ -89,7 +103,7 @@ const App = () => {
     {user && <Togglable buttonLabel='create new blog' ref={blogTogglableRef}>
       <NewBlog handleBlog={handleBlog} ref={blogFormRef} />
     </Togglable>}
-    {user && <Blogs blogs={blogs} />}
+    {user && <Blogs blogs={blogs} handleLike={handleLike} />}
   </>
 }
 

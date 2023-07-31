@@ -36,6 +36,7 @@ router.route('/:id').get(async ({ params }, response, next) => {
     author: body.author,
     url: body.url,
     likes: body.likes,
+    user: body.user,
   }
   const options = {
     new: true,
@@ -43,7 +44,10 @@ router.route('/:id').get(async ({ params }, response, next) => {
     context: 'query',
   }
 
-  const updated = await Blog.findByIdAndUpdate(params.id, blog, options)
+  const updated = await Blog
+    .findByIdAndUpdate(params.id, blog, options)
+    .populate('user', { username: 1, name: 1 })
+
   if (updated) response.json(updated)
   else next()
 }).delete(userExtractor, async ({ params, user }, response) => {
