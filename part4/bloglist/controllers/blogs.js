@@ -52,9 +52,15 @@ router.route('/:id').get(async ({ params }, response, next) => {
   else next()
 }).delete(userExtractor, async ({ params, user }, response) => {
   const blog = await Blog.findById(params.id)
+
   if (!blog) return response.status(404).json({ error: 'item not found' })
   if (blog?.user?.toString() !== user) return response.status(401).json({ error: 'that blog is not yours to delete' })
+
+  const userFromDB = await User.findById(user)
+  userFromDB.blogs = userFromDB.blogs.filter(id => id.toString() !== params.id)
   await Blog.findByIdAndRemove(params.id)
+  await userFromDB.save()
+
   response.status(204).end()
 })
 

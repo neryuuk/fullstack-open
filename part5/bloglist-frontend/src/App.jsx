@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { setToken, getAll, newNote, updateNote } from './services/blogs'
+import { setToken, getAll, newNote, updateNote, deleteNote } from './services/blogs'
 import { login } from './services/login'
 import Login from './components/Login'
 import Blogs from './components/Blogs'
@@ -47,13 +47,23 @@ const App = () => {
     }
   }
 
+  const handleDelete = async data => {
+    try {
+      await deleteNote(data.id)
+      setNotification(`Removed blog '${data.title}' ${data.author ? `by ${data.author} ` : ''}`)
+      setBlogs(blogs.filter(blog => blog.id !== data.id))
+    } catch (exception) {
+      setNotification(exception?.response?.data?.error, true)
+    }
+  }
+
   const handleLike = async (data) => {
     try {
       const response = await updateNote(data)
       setNotification(`you liked '${response.title}'`)
       setBlogs(blogs.map(blog => {
         if (blog.id !== data.id) return blog
-        return {...blog, likes: response.likes }
+        return { ...blog, likes: response.likes }
       }).sort((a, b) => b.likes - a.likes))
     } catch (exception) {
       setNotification(exception?.response?.data?.error, true)
@@ -103,7 +113,7 @@ const App = () => {
     {user && <Togglable buttonLabel='create new blog' ref={blogTogglableRef}>
       <NewBlog handleBlog={handleBlog} ref={blogFormRef} />
     </Togglable>}
-    {user && <Blogs blogs={blogs} handleLike={handleLike} />}
+    {user && <Blogs {...{ user, blogs, handleLike, handleDelete }} />}
   </>
 }
 

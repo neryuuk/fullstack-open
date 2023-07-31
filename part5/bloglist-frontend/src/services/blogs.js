@@ -21,3 +21,8 @@ export const updateNote = async data => {
   const response = await axios.put(`${baseUrl}/${data.id}`, data, config)
   return response.data
 }
+
+export const deleteNote = async id => {
+  const response = await axios.delete(`${baseUrl}/${id}`, config)
+  return response.data
+}
