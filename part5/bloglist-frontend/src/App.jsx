@@ -18,7 +18,7 @@ const App = () => {
   const blogFormRef = useRef()
 
   useEffect(() => {
-    getAll().then(blogs => setBlogs(blogs))
+    getAll().then(blogs => setBlogs(blogs.sort((a, b) => b.likes - a.likes)))
   }, [])
 
   useEffect(() => {
@@ -39,7 +39,7 @@ const App = () => {
     try {
       const response = await newNote(data)
       setNotification(`a new blog ${data.title} ${data.author ? `by ${data.author} ` : ''}added`)
-      setBlogs(blogs.concat(response))
+      setBlogs(blogs.concat(response).sort((a, b) => b.likes - a.likes))
       blogFormRef.current.clearFields()
       blogTogglableRef.current.toggleVisibility()
     } catch (exception) {
@@ -54,7 +54,7 @@ const App = () => {
       setBlogs(blogs.map(blog => {
         if (blog.id !== data.id) return blog
         return {...blog, likes: response.likes }
-      }))
+      }).sort((a, b) => b.likes - a.likes))
     } catch (exception) {
       setNotification(exception?.response?.data?.error, true)
     }
