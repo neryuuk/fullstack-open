@@ -59,3 +59,9 @@ button.anchor {
 #loginForm {
   padding: 0 0 10px 0;
 }
+
+#footer {
+  color: green;
+  font-style: italic;
+  font-size: 16;
+}

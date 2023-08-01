@@ -10,15 +10,15 @@ const Togglable = forwardRef(({ buttonLabel, children }, refs) => {
   const toggleVisibility = () => { setVisible(!visible) }
   useImperativeHandle(refs, () => { return { toggleVisibility } })
 
-  return <div id='loginForm'>
-    <div style={hideWhenVisible}>
+  return <>
+    <div id='loginForm' style={hideWhenVisible}>
       <button onClick={toggleVisibility}>{buttonLabel}</button>
     </div>
-    <div style={showWhenVisible}>
+    <div id='loginForm' className='togglable' style={showWhenVisible}>
       {children}
       <button onClick={toggleVisibility}>cancel</button>
     </div>
-  </div>
+  </>
 })
 
 Togglable.displayName = 'Togglable'

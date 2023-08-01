@@ -23,7 +23,7 @@ const Login = ({ user, handleLogin, handleLogout }) => {
   }
 
   return user
-    ? <p>{user.name} logged in (<Link action={handleLogout} text='logout' />)</p>
+    ? <p>{user.name} logged in (<Link id='logout' action={handleLogout} text='logout' />)</p>
     : <form onSubmit={login}>
       <div>
         <label htmlFor='username'>username</label>
