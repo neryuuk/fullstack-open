@@ -22,10 +22,10 @@ export const Blog = ({ user, blog, handleLike, handleDelete }) => {
   return <li><p>
     {blog.title} {blog.author} <button onClick={() => setComplete(!complete)}>{complete ? 'hide' : 'view'}</button>
     {complete && <span>
-      <br /><a href={blog.url}>{blog.url}</a>
-      <br />likes {blog.likes} <button onClick={like}>like</button>
+      <br /><a className='blog-url' href={blog.url}>{blog.url}</a>
+      <br /><span className='blog-likes'>likes {blog.likes} <button className='like-button' onClick={like}>like</button></span>
       <br />{blog?.user?.name}
-      {canDelete && <><br /><button onClick={remove}>remove</button></>}
+      {canDelete && <><br /><button className='remove-button' onClick={remove}>remove</button></>}
     </span>}
   </p></li>
 }
