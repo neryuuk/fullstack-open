@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 
 export const Link = ({ action, text }) => {
-  return <button className="anchor" onClick={action}>{text}</button>
+  return <button className='anchor' onClick={action}>{text}</button>
 }
 
 Link.propTypes = {

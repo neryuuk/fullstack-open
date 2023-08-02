@@ -7,6 +7,7 @@ import { Blog } from './Blog'
 describe('<Blog />', () => {
   let container
   const handleLike = jest.fn()
+  const handleDelete = jest.fn()
 
   beforeEach(() => {
     const blog = {
@@ -22,12 +23,7 @@ describe('<Blog />', () => {
       },
     }
 
-    container = render(<Blog {...{
-      blog,
-      user: blog.user,
-      handleLike,
-      handleDelete: () => { },
-    }} />).container
+    container = render(<Blog {...{ blog, user: blog.user, handleLike, handleDelete }} />).container
   })
 
   test('renders content', () => {
@@ -56,5 +52,31 @@ describe('<Blog />', () => {
     await user.click(button)
 
     expect(handleLike.mock.calls).toHaveLength(2)
+  })
+
+  test('remove button confirm cancel', async () => {
+    const user = userEvent.setup()
+    await user.click(screen.getByText('view'))
+
+    const confirmSpy = jest.spyOn(window, 'confirm')
+    confirmSpy.mockImplementation(jest.fn(() => false))
+
+    await user.click(screen.getByText('remove'))
+    expect(handleDelete.mock.calls).toHaveLength(0)
+
+    confirmSpy.mockRestore()
+  })
+
+  test('remove button confirm ok', async () => {
+    const user = userEvent.setup()
+    await user.click(screen.getByText('view'))
+
+    const confirmSpy = jest.spyOn(window, 'confirm')
+    confirmSpy.mockImplementation(jest.fn(() => true))
+
+    await user.click(screen.getByText('remove'))
+    expect(handleDelete.mock.calls).toHaveLength(1)
+
+    confirmSpy.mockRestore()
   })
 })
