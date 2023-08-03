@@ -18,7 +18,7 @@ router.route('/').post(userExtractor, async ({ body, user }, response) => {
   userFromDB.blogs = userFromDB.blogs.concat(result._id)
   await userFromDB.save()
 
-  response.status(201).json(result)
+  response.status(201).json(await result.populate('user', { username: 1, name: 1 }))
 }).get(async (_, response) => {
   const blogs = await Blog
     .find({})
@@ -36,6 +36,7 @@ router.route('/:id').get(async ({ params }, response, next) => {
     author: body.author,
     url: body.url,
     likes: body.likes,
+    user: body.user,
   }
   const options = {
     new: true,
@@ -43,14 +44,23 @@ router.route('/:id').get(async ({ params }, response, next) => {
     context: 'query',
   }
 
-  const updated = await Blog.findByIdAndUpdate(params.id, blog, options)
+  const updated = await Blog
+    .findByIdAndUpdate(params.id, blog, options)
+    .populate('user', { username: 1, name: 1 })
+
   if (updated) response.json(updated)
   else next()
 }).delete(userExtractor, async ({ params, user }, response) => {
   const blog = await Blog.findById(params.id)
+
   if (!blog) return response.status(404).json({ error: 'item not found' })
   if (blog?.user?.toString() !== user) return response.status(401).json({ error: 'that blog is not yours to delete' })
+
+  const userFromDB = await User.findById(user)
+  userFromDB.blogs = userFromDB.blogs.filter(id => id.toString() !== params.id)
   await Blog.findByIdAndRemove(params.id)
+  await userFromDB.save()
+
   response.status(204).end()
 })
 

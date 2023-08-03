@@ -6,8 +6,8 @@ const { MONGODB_URI, NODE_ENV } = require('./utils/config')
 const middleware = require('./utils/middleware')
 const logger = require('./utils/logger')
 const loginRouter = require('./controllers/login')
+const notesRouter = require('./controllers/notes')
 const usersRouter = require('./controllers/users')
-const blogsRouter = require('./controllers/blogs')
 
 const app = express()
 
@@ -21,18 +21,19 @@ mongoose.connect(MONGODB_URI).then(() => {
 
 app.use(cors())
 app.use(express.json())
-if (NODE_ENV !== 'test') app.use(middleware.logHandler)
+if (NODE_ENV !== 'test') app.use(middleware.requestLogger)
 app.use(express.static('build'))
+
 app.use(middleware.tokenExtractor)
 app.use('/api/login', loginRouter)
+app.use('/api/notes', notesRouter)
 app.use('/api/users', usersRouter)
-app.use('/api/blogs', blogsRouter)
 
 if (NODE_ENV === 'test') {
   app.use('/api/tests', require('./controllers/testing'))
 }
 
 app.use(middleware.errorHandler)
-app.use(middleware.fourOhFourHandler)
+app.use(middleware.unknownEndpoint)
 
 module.exports = app

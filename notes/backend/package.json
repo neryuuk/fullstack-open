@@ -1,13 +1,15 @@
 {
-  "name": "bloglist-backend",
+  "name": "notes-backend",
   "version": "1.0.0",
-  "description": "Blog list application, that allows users to save information about interesting blogs they have stumbled across on the internet",
-  "main": "index.js",
+  "author": "Nelson Antunes <neryuuk@neryuuk.com>",
+  "license": "MIT",
+  "private": true,
   "scripts": {
     "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "build:ui": "rm -rf build && cd ../frontend && npm run build && cp -r build ../backend",
     "deploy": "fly deploy",
-    "deploy:full": "npm run lint && npm run test && npm run deploy",
+    "deploy:full": "npm run build:ui && npm run lint && npm run test && npm run deploy",
     "lint": "eslint .",
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
     "start:test": "cross-env NODE_ENV=test node index.js"
@@ -17,8 +19,6 @@
     "testTimeout": 15000,
     "globalTeardown": "./tests/teardown.js"
   },
-  "author": "Nelson Antunes <neryuuk@neryuuk.com>",
-  "license": "MIT",
   "dependencies": {
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
