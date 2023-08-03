@@ -93,13 +93,13 @@ describe('Blog app', function () {
       it('a blog by other user cannot be deleted', function () {
         const OTHER_USER = { username: 'other', password: 'other', name: 'other' }
         cy.request('POST', `${Cypress.env('BACKEND')}/users`, OTHER_USER).then(() => {
-          cy.request('POST', `${Cypress.env('BACKEND')}/login`, OTHER_USER).then(({ body }) => {
-            cy.request({
-              url: `${Cypress.env('BACKEND')}/blogs`,
-              method: 'POST',
-              body: BLOG,
-              headers: { 'Authorization': `Bearer ${body.token}` },
-            })
+          return cy.request('POST', `${Cypress.env('BACKEND')}/login`, OTHER_USER)
+        }).then(({ body }) => {
+          cy.request({
+            url: `${Cypress.env('BACKEND')}/blogs`,
+            method: 'POST',
+            body: BLOG,
+            headers: { 'Authorization': `Bearer ${body.token}` },
           })
         })
 
@@ -107,6 +107,19 @@ describe('Blog app', function () {
         cy.contains(`${BLOG.title} ${BLOG.author}`)
         cy.contains('view').click()
         cy.should('not.contain', 'remove')
+      })
+
+      it('blogs are ordered by likes', function () {
+        cy.createBlog({ ...BLOG, title: BLOG.title + ' 8', likes: 8 })
+        cy.createBlog({ ...BLOG, title: BLOG.title + ' 12', likes: 12 })
+        cy.createBlog({ ...BLOG, title: BLOG.title + ' 3', likes: 3 })
+        cy.createBlog({ ...BLOG, title: BLOG.title + ' 13', likes: 13 })
+
+        cy.visit('')
+        cy.get('.blog').eq(0).should('contain', 'New Test Blog 13')
+        cy.get('.blog').eq(1).should('contain', 'New Test Blog 12')
+        cy.get('.blog').eq(2).should('contain', 'New Test Blog 8')
+        cy.get('.blog').eq(3).should('contain', 'New Test Blog 3')
       })
     })
   })
