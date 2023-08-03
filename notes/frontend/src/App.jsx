@@ -75,10 +75,10 @@ const App = () => {
     <div>
       <h1>Notes</h1>
       <Notification message={errorMessage} />
-      <Togglable buttonLabel='login'>
+      <Togglable id='login' buttonLabel='login'>
         <Login {...{ user, handleLogin, handleLogout }} />
       </Togglable>
-      {user && <Togglable buttonLabel='new note' ref={noteFormRef}>
+      {user && <Togglable id='new-note' buttonLabel='new note' ref={noteFormRef}>
         <NewNote {...{ createNote }} />
       </Togglable>}
       <div>

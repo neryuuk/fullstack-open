@@ -33,7 +33,7 @@ const Login = ({ user, handleLogin, handleLogout }) => {
         <label htmlFor='password'>password</label>
         <input id='password' type='password' value={password} onChange={handleField} />
       </div>
-      <button type='submit'>login</button>
+      <button id='login-button' type='submit'>login</button>
     </form>
 }
 

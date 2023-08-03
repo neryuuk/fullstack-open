@@ -19,7 +19,7 @@ const NewNote = ({ createNote }) => {
         onChange={({ target }) => setNewNote(target.value)}
         placeholder='write note content here...'
       />
-      <button type="submit">save</button>
+      <button id='new-note-button' type="submit">save</button>
     </form>
   </div>
 }
