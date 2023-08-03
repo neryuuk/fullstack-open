@@ -19,13 +19,13 @@ export const Blog = ({ user, blog, handleLike, handleDelete }) => {
 
   const canDelete = user.username === blog.user.username
 
-  return <li><p>
-    {blog.title} {blog.author} <button onClick={() => setComplete(!complete)}>{complete ? 'hide' : 'view'}</button>
+  return <li><p id={`${blog.id}-blog`} className='blog'>
+    {blog.title} {blog.author} <button id={`${blog.id}-view-button`} onClick={() => setComplete(!complete)}>{complete ? 'hide' : 'view'}</button>
     {complete && <span>
       <br /><a className='blog-url' href={blog.url}>{blog.url}</a>
-      <br /><span className='blog-likes'>likes {blog.likes} <button className='like-button' onClick={like}>like</button></span>
+      <br /><span className='blog-likes'>likes {blog.likes} <button id={`${blog.id}-like-button`} className='like-button' onClick={like}>like</button></span>
       <br />{blog?.user?.name}
-      {canDelete && <><br /><button className='remove-button' onClick={remove}>remove</button></>}
+      {canDelete && <><br /><button id={`${blog.id}-remove-button`} className='remove-button' onClick={remove}>remove</button></>}
     </span>}
   </p></li>
 }
