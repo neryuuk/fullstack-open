@@ -39,17 +39,18 @@ describe('Blog app', function () {
     })
 
     describe('When logged in', function () {
+      const BLOG = {
+        title: 'New Test Blog',
+        author: 'Author Testington',
+        url: 'https://google.com',
+      }
+
       beforeEach(function () {
         cy.login(USER)
         cy.contains(`${USER.name} logged in`)
       })
 
       it('a new blog can be created', function () {
-        const BLOG = {
-          title: 'New Test Blog',
-          author: 'Author Testington',
-          url: 'https://google.com',
-        }
         cy.get('button#show-new-blog').click()
         cy.get('input#title').type(BLOG.title)
         cy.get('input#author').type(BLOG.author)
@@ -62,11 +63,6 @@ describe('Blog app', function () {
       })
 
       it('a blog can be liked', function () {
-        const BLOG = {
-          title: 'New Test Blog',
-          author: 'Author Testington',
-          url: 'https://google.com',
-        }
         cy.get('button#show-new-blog').click()
         cy.get('input#title').type(BLOG.title)
         cy.get('input#author').type(BLOG.author)
@@ -81,11 +77,6 @@ describe('Blog app', function () {
       })
 
       it('a blog can be deleted', function () {
-        const BLOG = {
-          title: 'New Test Blog',
-          author: 'Author Testington',
-          url: 'https://google.com',
-        }
         cy.get('button#show-new-blog').click()
         cy.get('input#title').type(BLOG.title)
         cy.get('input#author').type(BLOG.author)
@@ -97,6 +88,25 @@ describe('Blog app', function () {
         cy.contains('view').click()
         cy.contains('remove').click()
         cy.contains('Removed blog \'New Test Blog\' by Author Testington')
+      })
+
+      it('a blog by other user cannot be deleted', function () {
+        const OTHER_USER = { username: 'other', password: 'other', name: 'other' }
+        cy.request('POST', `${Cypress.env('BACKEND')}/users`, OTHER_USER).then(() => {
+          cy.request('POST', `${Cypress.env('BACKEND')}/login`, OTHER_USER).then(({ body }) => {
+            cy.request({
+              url: `${Cypress.env('BACKEND')}/blogs`,
+              method: 'POST',
+              body: BLOG,
+              headers: { 'Authorization': `Bearer ${body.token}` },
+            })
+          })
+        })
+
+        cy.visit('')
+        cy.contains(`${BLOG.title} ${BLOG.author}`)
+        cy.contains('view').click()
+        cy.should('not.contain', 'remove')
       })
     })
   })
