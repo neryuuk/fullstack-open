@@ -44,7 +44,7 @@ const NewBlog = forwardRef(({ handleBlog }, refs) => {
         <label className='blogFields' htmlFor='url'>url:</label>
         <input id='url' type='text' value={newUrl} onChange={handleField} />
       </div>
-      <button type='submit'>create</button>
+      <button id='new-blog-button' type='submit'>create</button>
     </form>
   </>
 })

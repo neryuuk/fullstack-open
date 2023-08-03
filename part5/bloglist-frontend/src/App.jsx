@@ -110,7 +110,7 @@ const App = () => {
     <h2>{user ? 'blogs' : 'log in to application'}</h2>
     <Toast message={message} type={error ? 'error' : 'info'} />
     <Login {...{ user, username, password, handleField, handleLogin, handleLogout }} />
-    {user && <Togglable buttonLabel='create new blog' ref={blogTogglableRef}>
+    {user && <Togglable id='new-blog' buttonLabel='create new blog' ref={blogTogglableRef}>
       <NewBlog handleBlog={handleBlog} ref={blogFormRef} />
     </Togglable>}
     {user && <Blogs {...{ user, blogs, handleLike, handleDelete }} />}
