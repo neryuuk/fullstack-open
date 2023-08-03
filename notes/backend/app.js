@@ -29,6 +29,10 @@ app.use('/api/login', loginRouter)
 app.use('/api/notes', notesRouter)
 app.use('/api/users', usersRouter)
 
+if (NODE_ENV === 'test') {
+  app.use('/api/tests', require('./controllers/testing'))
+}
+
 app.use(middleware.errorHandler)
 app.use(middleware.unknownEndpoint)
 
