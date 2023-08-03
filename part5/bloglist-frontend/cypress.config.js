@@ -1,7 +1,7 @@
 const { defineConfig } = require('cypress')
 
 module.exports = defineConfig({
-  projectId: 'vieivy',
+  projectId: 'ziwb3s',
   e2e: {
     setupNodeEvents (/*on, config*/) {
       // implement node event listeners here
@@ -9,6 +9,6 @@ module.exports = defineConfig({
     baseUrl: 'http://localhost:3000',
   },
   env: {
-    BACKEND: 'http://localhost:3001/api',
+    BACKEND: 'http://localhost:3003/api',
   },
 })

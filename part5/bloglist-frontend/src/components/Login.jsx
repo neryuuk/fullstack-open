@@ -13,7 +13,7 @@ const Login = ({ user, username, password, handleField, handleLogin, handleLogou
         <label className='loginFields' htmlFor='password'>password</label>
         <input id='password' type='password' value={password} onChange={handleField} />
       </div>
-      <button type='submit'>login</button>
+      <button id='login-button' type='submit'>login</button>
     </form>
 }
 

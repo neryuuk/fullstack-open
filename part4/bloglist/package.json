@@ -9,7 +9,8 @@
     "deploy": "fly deploy",
     "deploy:full": "npm run lint && npm run test && npm run deploy",
     "lint": "eslint .",
-    "test": "cross-env NODE_ENV=test jest --verbose --runInBand"
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
+    "start:test": "cross-env NODE_ENV=test node index.js"
   },
   "jest": {
     "testEnvironment": "node",
