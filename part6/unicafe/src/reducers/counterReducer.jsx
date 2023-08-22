@@ -5,7 +5,6 @@ export const BAD = { type: 'BAD' }
 export const ZERO = { type: 'ZERO' }
 
 const counterReducer = (state = INITIAL, { type }) => {
-  console.log(type)
   switch (type) {
     case 'GOOD':
       return { ...state, good: state.good + 1 }

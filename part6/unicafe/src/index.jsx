@@ -1,54 +1,30 @@
-import React, { useState } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { createStore } from 'redux'
 import counterReducer from './reducers/counterReducer'
+import Button from './components/Button'
+import Statistics from './components/Statistics'
+import './index.css'
 
 const store = createStore(counterReducer)
 
-store.subscribe(() => {
-  console.log(store.getState())
-})
-
-const Button = ({ handleClick, text }) => (
-  <button onClick={handleClick}>{text}</button>
-)
-
-const StatisticLine = ({ text, value }) => (
-  <tr>
-    <td>{text}</td>
-    <td>{value}</td>
-  </tr>
-)
-
-const Statistics = ({ good, bad, neutral }) => {
-  const total = good + neutral + bad
-
-  if (total === 0) return <p>No feedback given</p>
-
-  return <table><tbody>
-    <StatisticLine text='good' value={good} />
-    <StatisticLine text='neutral' value={neutral} />
-    <StatisticLine text='bad' value={bad} />
-    <StatisticLine text='all' value={total} />
-    <StatisticLine text='average' value={(good - bad) / (total)} />
-    <StatisticLine text='positive' value={`${(good * 100) / (total)} %`} />
-  </tbody></table>
+const handleAction = (type) => {
+  store.dispatch({ type })
 }
 
 const App = () => {
-  const [good, setGood] = useState(0)
-  const [neutral, setNeutral] = useState(0)
-  const [bad, setBad] = useState(0)
-
   return (
     <div>
       <h1>give feedback</h1>
-      <Button text='good' handleClick={() => setGood(good + 1)} />
-      <Button text='neutral' handleClick={() => setNeutral(neutral + 1)} />
-      <Button text='bad' handleClick={() => setBad(bad + 1)} />
+      <p>
+        <Button id='good' text='good' action={() => handleAction('GOOD')} />
+        <Button id='neutral' text='neutral' action={() => handleAction('NEUTRAL')} />
+        <Button id='bad' text='bad' action={() => handleAction('BAD')} />
+        <Button id='reset' text='reset stats' action={() => handleAction('ZERO')} />
+      </p>
 
       <h1>statistics</h1>
-      <Statistics good={good} neutral={neutral} bad={bad} />
+      <Statistics {...store.getState()} />
     </div>
   )
 }

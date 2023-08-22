@@ -3,7 +3,7 @@ import deepFreeze from 'deep-freeze'
 import counterReducer, { INITIAL, GOOD, NEUTRAL, BAD, ZERO } from './counterReducer'
 
 describe('unicafe reducer', () => {
-  test('should return a proper initial state when called with undefined state', () => {
+  test('should return a proper initial state when called with undefined', () => {
     const newState = counterReducer(undefined, { type: 'DO_NOTHING' })
     expect(newState).toEqual(INITIAL)
   })
