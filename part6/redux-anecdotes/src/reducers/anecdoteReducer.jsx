@@ -1,3 +1,5 @@
+/* eslint indent: ['error', 2, { SwitchCase: 1 }] */
+
 const anecdotesAtStart = [
   'If it hurts, do it more often',
   'Adding manpower to a late software project makes it later!',
@@ -19,19 +21,18 @@ const asObject = content => {
 
 const initialState = anecdotesAtStart.map(asObject)
 
-export const reducer = (state = initialState, { type, payload }) => {
-  if (type === CREATE) {
-    return [...state, asObject(payload)]
+export const anecdoteReducer = (state = initialState, { type, payload }) => {
+  switch (type) {
+    case CREATE:
+      return [...state, asObject(payload)]
+    case VOTE:
+      return state.map(item => {
+        if (item.id !== payload.id) return item
+        return { ...item, votes: item.votes + 1 }
+      }).sort((a, b) => b.votes - a.votes)
+    default:
+      return state
   }
-
-  if (type === VOTE) {
-    return state.map(item => {
-      if (item.id !== payload.id) return item
-      return { ...item, votes: item.votes + 1 }
-    }).sort((a, b) => b.votes - a.votes)
-  }
-
-  return state
 }
 
 export const VOTE = 'VOTE'
@@ -52,4 +53,4 @@ export const create = payload => {
   }
 }
 
-export default reducer
+export default anecdoteReducer
