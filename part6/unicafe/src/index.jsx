@@ -2,13 +2,14 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { createStore } from 'redux'
 import counterReducer from './reducers/counterReducer'
+import { GOOD, NEUTRAL, BAD, ZERO } from './actions/counterAction'
 import Button from './components/Button'
 import Statistics from './components/Statistics'
 import './index.css'
 
 const store = createStore(counterReducer)
 
-const handleAction = (type) => {
+const handleAction = type => {
   store.dispatch({ type })
 }
 
@@ -17,10 +18,10 @@ const App = () => {
     <div>
       <h1>give feedback</h1>
       <p>
-        <Button id='good' text='good' action={() => handleAction('GOOD')} />
-        <Button id='neutral' text='neutral' action={() => handleAction('NEUTRAL')} />
-        <Button id='bad' text='bad' action={() => handleAction('BAD')} />
-        <Button id='reset' text='reset stats' action={() => handleAction('ZERO')} />
+        <Button id='good' text='good' action={() => handleAction(GOOD)} />
+        <Button id='neutral' text='neutral' action={() => handleAction(NEUTRAL)} />
+        <Button id='bad' text='bad' action={() => handleAction(BAD)} />
+        <Button id='reset' text='reset stats' action={() => handleAction(ZERO)} />
       </p>
 
       <h1>statistics</h1>

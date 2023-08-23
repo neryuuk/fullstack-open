@@ -1,6 +1,7 @@
 import '@testing-library/react'
 import deepFreeze from 'deep-freeze'
-import counterReducer, { INITIAL, GOOD, NEUTRAL, BAD, ZERO } from './counterReducer'
+import { INITIAL, counterReducer } from './counterReducer'
+import { GOOD, NEUTRAL, BAD, ZERO } from '../actions/counterAction'
 
 describe('unicafe reducer', () => {
   test('should return a proper initial state when called with undefined', () => {
@@ -12,7 +13,7 @@ describe('unicafe reducer', () => {
     const state = { ...INITIAL }
     deepFreeze(state)
 
-    const newState = counterReducer(state, GOOD)
+    const newState = counterReducer(state, { type: GOOD })
     expect(newState).toEqual({ good: 1, neutral: 0, bad: 0 })
   })
 
@@ -20,7 +21,7 @@ describe('unicafe reducer', () => {
     const state = { ...INITIAL }
     deepFreeze(state)
 
-    const newState = counterReducer(state, NEUTRAL)
+    const newState = counterReducer(state, { type: NEUTRAL })
     expect(newState).toEqual({ good: 0, neutral: 1, bad: 0 })
   })
 
@@ -28,7 +29,7 @@ describe('unicafe reducer', () => {
     const state = { ...INITIAL }
     deepFreeze(state)
 
-    const newState = counterReducer(state, BAD)
+    const newState = counterReducer(state, { type: BAD })
     expect(newState).toEqual({ good: 0, neutral: 0, bad: 1 })
   })
 
@@ -36,12 +37,12 @@ describe('unicafe reducer', () => {
     const state = { ...INITIAL }
     deepFreeze(state)
 
-    let newState = counterReducer(state, GOOD)
-    newState = counterReducer(newState, NEUTRAL)
-    newState = counterReducer(newState, BAD)
+    let newState = counterReducer(state, { type: GOOD })
+    newState = counterReducer(newState, { type: NEUTRAL })
+    newState = counterReducer(newState, { type: BAD })
     expect(newState).toEqual({ good: 1, neutral: 1, bad: 1 })
 
-    newState = counterReducer(newState, ZERO)
+    newState = counterReducer(newState, { type: ZERO })
     expect(newState).toEqual(INITIAL)
   })
 })
