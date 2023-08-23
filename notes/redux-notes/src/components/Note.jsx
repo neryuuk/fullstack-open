@@ -8,7 +8,7 @@ export const Note = ({ id, content, important }) => {
     dispatch(toggleImportanceOf(id))
   }
 
-  return <li onClick={() => toggleImportance(id)}>
+  return <li id={`note-${id}`} onClick={() => toggleImportance(id)}>
     {content} <strong>{important ? 'is important' : ''}</strong>
   </li>
 }
