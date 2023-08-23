@@ -1,5 +1,3 @@
-import { VOTE, CREATE } from '../actions/anecdoteAction'
-
 const anecdotesAtStart = [
   'If it hurts, do it more often',
   'Adding manpower to a late software project makes it later!',
@@ -34,6 +32,24 @@ export const reducer = (state = initialState, { type, payload }) => {
   }
 
   return state
+}
+
+export const VOTE = 'VOTE'
+
+export const CREATE = 'CREATE'
+
+export const vote = id => {
+  return {
+    type: VOTE,
+    payload: { id },
+  }
+}
+
+export const create = payload => {
+  return {
+    type: CREATE,
+    payload,
+  }
 }
 
 export default reducer
