@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import Anecdote from '../components/Anecdote'
 
-export const Anecdotes = () => {
+export const AnecdoteList = () => {
   const anecdotes = useSelector(state => state)
 
   return <>
@@ -10,4 +10,4 @@ export const Anecdotes = () => {
   </>
 }
 
-export default Anecdotes
+export default AnecdoteList
