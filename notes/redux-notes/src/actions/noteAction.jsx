@@ -1,0 +1,3 @@
+export const NEW_NOTE = 'NEW_NOTE'
+
+export const TOGGLE_IMPORTANCE = 'TOGGLE_IMPORTANCE'

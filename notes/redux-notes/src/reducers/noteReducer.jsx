@@ -1,9 +1,11 @@
+import { NEW_NOTE, TOGGLE_IMPORTANCE } from '../actions/noteAction'
+
 export const noteReducer = (state = [], { type, payload }) => {
-  if (type === 'NEW_NOTE') {
+  if (type === NEW_NOTE) {
     return [...state, payload]
   }
 
-  if (type === 'TOGGLE_IMPORTANCE') {
+  if (type === TOGGLE_IMPORTANCE) {
     return state.map(item => {
       if (item.id !== payload.id) return item
       return { ...item, important: !item.important }
@@ -17,7 +19,7 @@ const generateId = () => Number((Math.random() * 1000).toFixed(0))
 
 export const createNote = content => {
   return {
-    type: 'NEW_NOTE',
+    type: NEW_NOTE,
     payload: {
       content,
       important: false,
@@ -28,7 +30,7 @@ export const createNote = content => {
 
 export const toggleImportanceOf = id => {
   return {
-    type: 'TOGGLE_IMPORTANCE',
+    type: TOGGLE_IMPORTANCE,
     payload: { id },
   }
 }
