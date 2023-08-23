@@ -1,21 +1,21 @@
 /* eslint indent: ['error', 2, { SwitchCase: 1 }] */
 
-import { ALL, SET_FILTER } from '../actions/filterAction'
+import { createSlice } from '@reduxjs/toolkit'
 
-export const filterReducer = (state = ALL, { type, payload }) => {
-  switch (type) {
-    case SET_FILTER:
+export const ALL = 'ALL'
+
+export const IMPORTANT = 'IMPORTANT'
+
+const filterSlice = createSlice({
+  name: 'notes',
+  initialState: ALL,
+  reducers: {
+    toggleFilter (_, { payload }) {
       return payload
-    default:
-      return state
-  }
-}
+    },
+  },
+})
 
-export const toggleFilter = payload => {
-  return {
-    type: SET_FILTER,
-    payload,
-  }
-}
+export default filterSlice.reducer
 
-export default filterReducer
+export const { toggleFilter } = filterSlice.actions

@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
 import Note from './Note'
-import { ALL, IMPORTANT } from '../actions/filterAction'
+import { ALL, IMPORTANT } from '../reducers/filterReducer'
 
 export const Notes = () => {
   const notes = useSelector(({ filter, notes }) => {

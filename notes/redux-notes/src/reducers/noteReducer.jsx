@@ -1,6 +1,6 @@
 /* eslint indent: ['error', 2, { SwitchCase: 1 }] */
 
-import { NEW_NOTE, TOGGLE_IMPORTANCE } from '../actions/noteAction'
+import { createSlice } from '@reduxjs/toolkit'
 
 const generateId = () => Number((Math.random() * 1000).toFixed(0))
 
@@ -14,36 +14,26 @@ const initialState = [{
   id: generateId(),
 }]
 
-export const noteReducer = (state = initialState, { type, payload }) => {
-  switch (type) {
-    case NEW_NOTE:
-      return [...state, payload]
-    case TOGGLE_IMPORTANCE:
+const noteSlice = createSlice({
+  name: 'notes',
+  initialState,
+  reducers: {
+    createNote (state, { payload }) {
+      state.push({
+        content: payload,
+        important: false,
+        id: generateId(),
+      })
+    },
+    toggleImportanceOf (state, { payload }) {
       return state.map(item => {
-        if (item.id !== payload.id) return item
+        if (item.id !== payload) return item
         return { ...item, important: !item.important }
       })
-    default:
-      return state
-  }
-}
-
-export const createNote = content => {
-  return {
-    type: NEW_NOTE,
-    payload: {
-      content,
-      important: false,
-      id: generateId(),
     },
-  }
-}
+  },
+})
 
-export const toggleImportanceOf = id => {
-  return {
-    type: TOGGLE_IMPORTANCE,
-    payload: { id },
-  }
-}
+export default noteSlice.reducer
 
-export default noteReducer
+export const { createNote, toggleImportanceOf } = noteSlice.actions
