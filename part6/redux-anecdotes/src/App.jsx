@@ -1,10 +1,10 @@
 import Anecdotes from './components/Anecdotes'
-import NewAnecdote from './components/NewAnecdote'
+import AnecdoteForm from './components/AnecdoteForm'
 
 const App = () => {
   return <>
     <Anecdotes />
-    <NewAnecdote />
+    <AnecdoteForm />
   </>
 }
 
