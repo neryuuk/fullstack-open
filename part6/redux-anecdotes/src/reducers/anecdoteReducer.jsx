@@ -1,4 +1,4 @@
-import { VOTE } from '../actions/anecdoteAction'
+import { VOTE, CREATE } from '../actions/anecdoteAction'
 
 const anecdotesAtStart = [
   'If it hurts, do it more often',
@@ -11,17 +11,21 @@ const anecdotesAtStart = [
 
 const getId = () => (100000 * Math.random()).toFixed(0)
 
-const asObject = (anecdote) => {
+const asObject = content => {
   return {
-    content: anecdote,
     id: getId(),
     votes: 0,
+    content,
   }
 }
 
 const initialState = anecdotesAtStart.map(asObject)
 
 export const reducer = (state = initialState, { type, payload }) => {
+  if (type === CREATE) {
+    return [...state, asObject(payload)]
+  }
+
   if (type === VOTE) {
     return state.map(item => {
       if (item.id !== payload.id) return item
@@ -30,13 +34,6 @@ export const reducer = (state = initialState, { type, payload }) => {
   }
 
   return state
-}
-
-export const vote = id => {
-  return {
-    type: VOTE,
-    payload: { id },
-  }
 }
 
 export default reducer
