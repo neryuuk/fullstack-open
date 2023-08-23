@@ -5,19 +5,41 @@
   font-size: 15px;
 }
 
+body {
+  margin: 15px;
+}
+
+ul {
+  margin: 0 0 10px 0;
+  padding-left: 30px;
+}
+
 li {
   color: grey;
 }
 
 form {
   padding: 0;
+  margin-bottom: 10px;
 }
 
 input {
-  margin: 0 5px 5px 0;
   padding: 5px;
 }
 
 button[type='submit'] {
+  margin-left: 5px;
   padding: 5px 10px;
+}
+
+.filter {
+  margin-bottom: 5px;
+}
+
+.radio-option {
+  margin: 0 4px;
+}
+
+.radio-option > * {
+  cursor: pointer;
 }

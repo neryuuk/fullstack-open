@@ -1,6 +1,18 @@
 import { NEW_NOTE, TOGGLE_IMPORTANCE } from '../actions/noteAction'
 
-export const noteReducer = (state = [], { type, payload }) => {
+const generateId = () => Number((Math.random() * 1000).toFixed(0))
+
+const initialState = [{
+  content: 'reducer defines how redux store works',
+  important: true,
+  id: generateId(),
+}, {
+  content: 'state of store can contain any data',
+  important: false,
+  id: generateId(),
+}]
+
+export const noteReducer = (state = initialState, { type, payload }) => {
   if (type === NEW_NOTE) {
     return [...state, payload]
   }
@@ -14,8 +26,6 @@ export const noteReducer = (state = [], { type, payload }) => {
 
   return state
 }
-
-const generateId = () => Number((Math.random() * 1000).toFixed(0))
 
 export const createNote = content => {
   return {
