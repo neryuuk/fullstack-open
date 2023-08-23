@@ -6,7 +6,6 @@ import App from './App'
 import reducer from './reducers/anecdoteReducer'
 import './index.css'
 
-ReactDOM.createRoot(document.getElementById('root'))
-  .render(<Provider store={createStore(reducer)}>
-    <App />
-  </Provider>)
+ReactDOM
+  .createRoot(document.getElementById('root'))
+  .render(<Provider store={createStore(reducer)}><App /></Provider>)

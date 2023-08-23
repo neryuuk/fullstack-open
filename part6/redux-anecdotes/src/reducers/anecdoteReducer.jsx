@@ -1,3 +1,5 @@
+import { VOTE } from '../actions/anecdoteAction'
+
 const anecdotesAtStart = [
   'If it hurts, do it more often',
   'Adding manpower to a late software project makes it later!',
@@ -19,11 +21,22 @@ const asObject = (anecdote) => {
 
 const initialState = anecdotesAtStart.map(asObject)
 
-const reducer = (state = initialState, action) => {
-  console.log('state now: ', state)
-  console.log('action', action)
+export const reducer = (state = initialState, { type, payload }) => {
+  if (type === VOTE) {
+    return state.map(item => {
+      if (item.id !== payload.id) return item
+      return { ...item, votes: item.votes + 1 }
+    })
+  }
 
   return state
+}
+
+export const vote = id => {
+  return {
+    type: VOTE,
+    payload: { id },
+  }
 }
 
 export default reducer
