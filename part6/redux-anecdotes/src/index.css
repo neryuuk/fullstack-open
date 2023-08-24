@@ -36,3 +36,8 @@ button.btn-submit {
 #filter {
   margin: 20px 0 10px 0;
 }
+
+.notification {
+  border: 1px solid;
+  padding: 10px;
+}
