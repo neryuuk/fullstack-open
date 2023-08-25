@@ -1,11 +1,8 @@
-/* eslint indent: ['error', 2, { SwitchCase: 1 }] */
 import { createSlice } from '@reduxjs/toolkit'
-
-const getId = () => (100000 * Math.random()).toFixed(0)
 
 const asObject = content => {
   return {
-    id: getId(),
+    id: (1000 * Math.random()).toFixed(0),
     votes: 0,
     content,
   }
@@ -24,9 +21,7 @@ const anecdoteSlice = createSlice({
   name: 'anecdotes',
   initialState,
   reducers: {
-    create (state, { payload }) {
-      state.push(asObject(payload))
-    },
+    create (state, { payload }) { state.push(asObject(payload)) },
     vote (state, { payload }) {
       return state.map(item => {
         if (item.id !== payload) return item
