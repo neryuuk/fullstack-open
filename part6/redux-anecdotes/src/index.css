@@ -26,6 +26,7 @@ input {
 
 button.btn-vote {
   margin-left: 10px;
+  min-width: 48px;
   padding: 1px 6px;
 }
 
