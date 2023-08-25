@@ -1,12 +1,13 @@
 import { useDispatch } from 'react-redux'
-import { createNote } from '../reducers/noteReducer'
+import { create } from '../reducers/noteReducer'
+import { post } from '../services/notes'
 
 export const NewNote = () => {
   const dispatch = useDispatch()
 
-  const addNote = event => {
+  const addNote = async (event) => {
     event.preventDefault()
-    dispatch(createNote(event.target.note.value))
+    dispatch(create(await post(event.target.note.value)))
     event.target.note.value = ''
   }
 

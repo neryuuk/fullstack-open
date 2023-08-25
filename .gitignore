@@ -133,3 +133,4 @@ dist
 **/cypress/downloads
 **/cypress/screenshots
 **/cypress/videos
+db.json
