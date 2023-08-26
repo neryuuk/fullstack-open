@@ -2,10 +2,10 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const notificationSlice = createSlice({
   name: 'notification',
-  initialState: null,
+  initialState: [],
   reducers: {
-    notify (_, { payload }) { return payload },
-    clear () { return null },
+    notify (state, { payload }) { return state.concat(payload) },
+    clear (state) { state.shift() },
   },
 })
 
