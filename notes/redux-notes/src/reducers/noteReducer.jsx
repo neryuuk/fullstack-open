@@ -1,12 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { get, post } from '../services/notes'
 
 const noteSlice = createSlice({
   name: 'notes',
   initialState: [],
   reducers: {
-    create (state, { payload }) {
-      state.push(payload)
-    },
     switchImportant (state, { payload }) {
       return state.map(item => {
         if (item.id !== payload) return item
@@ -22,6 +20,18 @@ const noteSlice = createSlice({
   },
 })
 
+export const initialize = () => {
+  return async dispatch => {
+    dispatch(setNotes(await get()))
+  }
+}
+
+export const create = content => {
+  return async dispatch => {
+    dispatch(append(await post(content)))
+  }
+}
+
 export default noteSlice.reducer
 
-export const { create, switchImportant, append, setNotes } = noteSlice.actions
+export const { switchImportant, append, setNotes } = noteSlice.actions
