@@ -1,4 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { get } from '../services/anecdotes'
 
 const anecdoteSlice = createSlice({
   name: 'anecdotes',
@@ -11,12 +12,19 @@ const anecdoteSlice = createSlice({
         return { ...item, votes: item.votes + 1 }
       }).sort((a, b) => b.votes - a.votes)
     },
-    setAnecdotes (_, { payload }) {
-      return payload.sort((a, b) => b.votes - a.votes)
-    },
   },
+  extraReducers (builder) {
+    builder.addCase(
+      initialize.fulfilled,
+      (_, { payload }) => payload,
+    )
+  },
+})
+
+export const initialize = createAsyncThunk('anecdotes/initialize', async () => {
+  return (await get()).sort((a, b) => b.votes - a.votes)
 })
 
 export default anecdoteSlice.reducer
 
-export const { create, vote, setAnecdotes } = anecdoteSlice.actions
+export const { create, vote } = anecdoteSlice.actions
