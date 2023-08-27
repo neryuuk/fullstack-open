@@ -1,29 +1,28 @@
-import { createStore } from 'redux'
+/* eslint indent: ['error', 2, { 'SwitchCase': 1 }] */
+import { useReducer } from 'react'
 
-const App = () => {
-  const store = createStore((state = 0, action) => {
-    switch (action.type) {
-    case 'INCREMENT':
+const reducer = (state = 0, { type }) => {
+  switch (type) {
+    case '+':
       return state + 1
-    case 'DECREMENT':
+    case '-':
       return state - 1
-    case 'ZERO':
+    case '0':
       return 0
     default:
       return state
-    }
-  })
+  }
+}
 
-  store.subscribe(() => {
-    console.log(store.getState())
-  })
+const App = () => {
+  const [counter, counterDispatch] = useReducer(reducer, 0)
 
-  return <div className="App">
-    <p>{store.getState()}</p>
-    <button onClick={() => store.dispatch({ type: 'INCREMENT' })}>plus</button>
-    <button onClick={() => store.dispatch({ type: 'DECREMENT' })}>minus</button>
-    <button onClick={() => store.dispatch({ type: 'ZERO' })}>zero</button>
-  </div>
+  return <>
+    <p>{counter}</p>
+    <button onClick={() => counterDispatch({ type: '+' })}>plus</button>
+    <button onClick={() => counterDispatch({ type: '-' })}>minus</button>
+    <button onClick={() => counterDispatch({ type: '0' })}>zero</button>
+  </>
 }
 
 export default App
