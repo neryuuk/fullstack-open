@@ -20,7 +20,7 @@ const App = () => {
 
     <Notification />
     <AnecdoteForm />
-    <Anecdotes data={result.data} />
+    <Anecdotes data={(result.data || []).sort((a, b) => b.votes - a.votes)} />
   </div>
 }
 
