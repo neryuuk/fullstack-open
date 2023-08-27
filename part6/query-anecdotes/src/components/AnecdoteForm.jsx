@@ -9,19 +9,23 @@ const AnecdoteForm = () => {
     onSuccess: newAnecdote => {
       const anecdotes = client.getQueryData(['anecdotes'])
       client.setQueryData(['anecdotes'], anecdotes.concat(newAnecdote))
+      dispatch({ type: 'notify', payload: `created anecdote '${newAnecdote.content}'` })
+      setTimeout(() => { dispatch({ type: 'clear' }) }, 5000)
+    },
+    onError: error => {
+      dispatch({ type: 'notify', payload: `failed to create anecdote: '${error.message}'` })
+      setTimeout(() => { dispatch({ type: 'clear' }) }, 5000)
     },
   })
 
   const onCreate = event => {
     event.preventDefault()
     anecdote.mutate({ content: event.target.anecdote.value, votes: 0 })
-    dispatch({ type: 'notify', payload: `created anecdote '${event.target.anecdote.value}'` })
-    setTimeout(() => { dispatch({ type: 'clear' }) }, 5000)
     event.target.anecdote.value = ''
   }
 
   return <div>
-    <h3>create new</h3>
+    <h2>create new</h2>
     <form onSubmit={onCreate}>
       <div>
         <input name='anecdote' id='anecdote' />

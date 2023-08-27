@@ -17,8 +17,7 @@ const App = () => {
   if (result.isError) return <h2>anecdote service not available due to problems in server</h2>
 
   return <Provider>
-    <h3>Anecdote app</h3>
-
+    <h2>Anecdote app</h2>
     <Notification />
     <AnecdoteForm />
     <Anecdotes data={(result.data || []).sort((a, b) => b.votes - a.votes)} />
