@@ -7,7 +7,7 @@ const AnecdoteForm = () => {
   const addAnecdote = async event => {
     event.preventDefault()
     dispatch(create(event.target.anecdote.value))
-    notification(`Created note: '${event.target.anecdote.value}'`, dispatch)
+    dispatch(notification(`Created note: '${event.target.anecdote.value}'`, 5))
     event.target.anecdote.value = ''
   }
 
