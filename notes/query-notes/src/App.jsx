@@ -2,13 +2,20 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { get, post, put } from './services/requests'
 
 const App = () => {
-  const KEY = { queryKey: ['notes'] }
   const client = useQueryClient()
   const newNote = useMutation(post, {
-    onSuccess: () => { client.invalidateQueries(KEY) },
+    onSuccess: newNote => {
+      const notes = client.getQueryData(['notes'])
+      client.setQueryData(['notes'], notes.concat(newNote))
+    },
   })
   const updateNote = useMutation(put, {
-    onSuccess: () => { client.invalidateQueries(KEY) },
+    onSuccess: (_, updated) => {
+      const notes = client.getQueryData(['notes'])
+      client.setQueryData(['notes'], notes.map(note => {
+        return note.id === updated.id ? updated : note
+      }))
+    },
   })
 
   const addNote = async event => {
@@ -22,10 +29,10 @@ const App = () => {
   }
 
   const result = useQuery({
+    refetchOnWindowFocus: false,
     queryKey: ['notes'],
     queryFn: get,
   })
-  console.log(JSON.parse(JSON.stringify(result)))
 
   if (result.isLoading) return <h2>loading data...</h2>
 
