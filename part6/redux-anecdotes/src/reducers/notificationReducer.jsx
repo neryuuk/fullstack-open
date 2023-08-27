@@ -18,9 +18,9 @@ const slice = createSlice({
   },
 })
 
-export default slice.reducer
-
 const { notify, clear } = slice.actions
+
+export default slice.reducer
 
 export const notification = (content, timeout = 5) => {
   return dispatch => {

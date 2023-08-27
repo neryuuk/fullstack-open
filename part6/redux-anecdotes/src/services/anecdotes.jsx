@@ -6,7 +6,7 @@ export const get = async () => {
     return response.data
   } catch (error) {
     console.error(error)
-    return []
+    return false
   }
 }
 
@@ -16,7 +16,7 @@ export const post = async (content) => {
     return response.data
   } catch (error) {
     console.error(error)
-    return null
+    return false
   }
 }
 
@@ -26,6 +26,6 @@ export const put = async (content) => {
     return response.data
   } catch (error) {
     console.error(error)
-    return null
+    return false
   }
 }

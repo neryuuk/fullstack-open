@@ -1,15 +1,19 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { get, post, put } from '../services/anecdotes'
 
-const concatState = (state, { payload }) => state.concat(payload)
+const name = 'anecdotes'
 
-const anecdoteSlice = createSlice({
-  name: 'anecdotes',
+const slice = createSlice({
+  name,
   initialState: [],
   reducers: {},
   extraReducers (builder) {
-    builder.addCase(initialize.fulfilled, concatState)
-    builder.addCase(create.fulfilled, concatState)
+    builder.addCase(initialize.fulfilled, (state, { payload }) => {
+      return payload ? payload.sort((a, b) => b.votes - a.votes) : state
+    })
+    builder.addCase(create.fulfilled, (state, { payload }) => {
+      return payload ? state.concat(payload) : state
+    })
     builder.addCase(vote.fulfilled, (state, { payload }) => {
       return state.map(item => {
         return (item.id === payload.id) ? payload : item
@@ -18,12 +22,10 @@ const anecdoteSlice = createSlice({
   },
 })
 
-export const initialize = createAsyncThunk('anecdotes/initialize', async () => {
-  return (await get()).sort((a, b) => b.votes - a.votes)
-})
+export const initialize = createAsyncThunk(`${name}/initialize`, get)
 
-export const create = createAsyncThunk('anecdotes/create', post)
+export const create = createAsyncThunk(`${name}/create`, post)
 
-export const vote = createAsyncThunk('anecdotes/vote', put)
+export const vote = createAsyncThunk(`${name}/vote`, put)
 
-export default anecdoteSlice.reducer
+export default slice.reducer
