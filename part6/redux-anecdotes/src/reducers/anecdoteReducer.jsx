@@ -1,22 +1,20 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { get, post } from '../services/anecdotes'
+import { get, post, put } from '../services/anecdotes'
 
 const concatState = (state, { payload }) => state.concat(payload)
 
 const anecdoteSlice = createSlice({
   name: 'anecdotes',
   initialState: [],
-  reducers: {
-    vote (state, { payload }) {
-      return state.map(item => {
-        if (item.id !== payload) return item
-        return { ...item, votes: item.votes + 1 }
-      }).sort((a, b) => b.votes - a.votes)
-    },
-  },
+  reducers: {},
   extraReducers (builder) {
     builder.addCase(initialize.fulfilled, concatState)
     builder.addCase(create.fulfilled, concatState)
+    builder.addCase(vote.fulfilled, (state, { payload }) => {
+      return state.map(item => {
+        return (item.id === payload.id) ? payload : item
+      }).sort((a, b) => b.votes - a.votes)
+    })
   },
 })
 
@@ -26,6 +24,6 @@ export const initialize = createAsyncThunk('anecdotes/initialize', async () => {
 
 export const create = createAsyncThunk('anecdotes/create', post)
 
-export default anecdoteSlice.reducer
+export const vote = createAsyncThunk('anecdotes/vote', put)
 
-export const { vote } = anecdoteSlice.actions
+export default anecdoteSlice.reducer
