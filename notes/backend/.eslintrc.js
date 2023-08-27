@@ -8,8 +8,8 @@ module.exports = {
   'extends': 'eslint:recommended',
   'parserOptions': { 'ecmaVersion': 'latest' },
   'rules': {
-    'indent': ['error', 2],
-    'linebreak-style': ['error', 'windows'],
+    'indent': ['error', 2, { SwitchCase: 1 }],
+    'linebreak-style': ['error', 'unix'],
     'quotes': ['error', 'single'],
     'semi': ['error', 'never'],
     'eqeqeq': 'error',
