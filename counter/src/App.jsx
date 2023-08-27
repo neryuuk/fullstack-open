@@ -1,5 +1,8 @@
 /* eslint indent: ['error', 2, { 'SwitchCase': 1 }] */
 import { useReducer } from 'react'
+import { Provider } from './CounterContext'
+import Button from './component/Button'
+import Display from './component/Display'
 
 const reducer = (state = 0, { type }) => {
   switch (type) {
@@ -17,12 +20,14 @@ const reducer = (state = 0, { type }) => {
 const App = () => {
   const [counter, counterDispatch] = useReducer(reducer, 0)
 
-  return <>
-    <p>{counter}</p>
-    <button onClick={() => counterDispatch({ type: '+' })}>plus</button>
-    <button onClick={() => counterDispatch({ type: '-' })}>minus</button>
-    <button onClick={() => counterDispatch({ type: '0' })}>zero</button>
-  </>
+  return (
+    <Provider value={[counter, counterDispatch]}>
+      <Display />
+      <Button type='+' />
+      <Button type='-' />
+      <Button type='0' />
+    </Provider>
+  )
 }
 
 export default App
