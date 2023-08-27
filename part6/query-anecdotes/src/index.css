@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+* {
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  margin: 10px 20px;
+}
+
+h2 {
+  margin: 14px 0 4px 0;
+}
+
+div.anecdote {
+  margin: 4px 0 12px 0;
+}
+
+input {
+  padding: 5px;
+}
+
+#anecdote {
+  margin: 0 5px 5px 0;
+}
+
+button.btn-vote {
+  margin-left: 10px;
+  min-width: 48px;
+  padding: 1px 6px;
+}
+
+button.btn-submit {
+  padding: 5px 10px;
+}
+
+#filter {
+  margin: 20px 0 10px 0;
+}
+
+.notification {
+  border: 1px solid #ddd;
+  margin: 0 0 4px 0;
+  padding: 10px;
+}
