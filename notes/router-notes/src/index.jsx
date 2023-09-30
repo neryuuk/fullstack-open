@@ -1,36 +1,31 @@
-import { useState } from 'react'
+import {
+  BrowserRouter as Router,
+} from 'react-router-dom'
 import ReactDOM from 'react-dom/client'
-
-const Home = () => <div><h2>TKTL notes app</h2></div>
-
-const Notes = () => <div><h2>Notes</h2></div>
-
-const Users = () => <div><h2>Users</h2></div>
+import './index.css'
+import { useState } from 'react'
+import { useEffect } from 'react'
+import { getAll } from './services/notes'
+import Menu from './components/Menu'
+import MyRoutes from './components/Routes'
+import Footer from './components/Footer'
 
 const App = () => {
-  const [page, setPage] = useState('home')
+  const [notes, setNotes] = useState([])
+  // const [user, setUser] = useState(null)
 
-  const toPage = page => event => {
-    event.preventDefault()
-    setPage(page)
-  }
-
-  const content = () => {
-    if (page === 'home') return <Home />
-    if (page === 'notes') return <Notes />
-    if (page === 'users') return <Users />
-  }
+  useEffect(() => {
+    getAll().then(data => {
+      setNotes(data)
+    }).catch(console.error)
+  }, [])
 
   return (
-    <div>
-      <div>
-        <a href="" onClick={toPage('home')} className='menu-item'>home</a>
-        <a href="" onClick={toPage('notes')} className='menu-item'>notes</a>
-        <a href="" onClick={toPage('users')} className='menu-item'>users</a>
-      </div>
-
-      {content()}
-    </div>
+    <Router>
+      <Menu />
+      <MyRoutes {...{ notes }} />
+      <Footer />
+    </Router>
   )
 }
 
