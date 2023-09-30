@@ -1,15 +1,17 @@
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes as ReactRoutes } from 'react-router-dom'
+import Home from './Home'
+import Login from './Login'
 import Notes from './Notes'
 import Users from './Users'
-import Home from './Home'
 
-const MyRoutes = ({ notes }) => {
-  return <Routes>
+const Routes = ({ notes, onLogin }) => {
+  return <ReactRoutes>
     <Route path='/notes/:id' element={<Notes {...{ notes }} />} />
     <Route path='/notes' element={<Notes {...{ notes }} />} />
     <Route path='/users' element={<Users />} />
+    <Route path='/login' element={<Login onLogin={onLogin} />} />
     <Route path='/' element={<Home />} />
-  </Routes>
+  </ReactRoutes>
 }
 
-export default MyRoutes
+export default Routes
