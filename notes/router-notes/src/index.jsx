@@ -27,7 +27,7 @@ const App = () => {
   return (
     <Router>
       <Menu {...{ user }} />
-      <Routes {...{ notes, onLogin }} />
+      <Routes {...{ notes, onLogin, user }} />
       <Footer />
     </Router>
   )
